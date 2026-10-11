@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>어린이 구약성경 초성퀴즈 🎈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gamja+Flower&display=swap');
+        
+        body {
+            font-family: 'Jua', sans-serif;
+            background: linear-gradient(135deg, #fef9c3 0%, #fee2e2 100%);
+            touch-action: manipulation;
+        }
+
+        .font-quiz {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .cute-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            border: 4px solid #FFF;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        .bounce-fun {
+            animation: bounceFun 0.6s infinite alternate cubic-bezier(0.5, 0.05, 0.1, 0.3);
+        }
+
+        @keyframes bounceFun {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-10px) scale(1.03); }
+        }
+
+        .pulse-gentle {
+            animation: pulseGentle 1.5s infinite;
+        }
+
+        @keyframes pulseGentle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fde047;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 select-none">
+
+    <div class="w-full max-w-md cute-card rounded-[2.5rem] p-5 sm:p-6 relative overflow-hidden my-auto">
+        
+        <!-- Top Cute Decoration Icons -->
+        <div class="absolute -top-3 -left-3 text-3xl opacity-80">👑</div>
+        <div class="absolute -top-2 -right-2 text-3xl opacity-80">📜</div>
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-sm font-bold px-3 py-1 rounded-full border-2 border-amber-300 shadow-sm mb-1.5">
+                <i class="fa-solid fa-star text-amber-500"></i> 속초교회 아동부 초성퀴즈대회 <i class="fa-solid fa-star text-amber-500"></i>
+            </span>
+            <h1 class="text-3xl font-extrabold text-amber-600 tracking-wide font-quiz drop-shadow-sm">
+                구약성경 초성퀴즈
+            </h1>
+            <p class="text-xs sm:text-sm text-amber-500 font-bold mt-0.5">구약성경 39권의 이름을 초성으로 맞혀봐요! 🦁</p>
+        </div>
+
+        <!-- Progress and Score Bar -->
+        <div class="bg-amber-50 rounded-2xl p-2.5 mb-4 border-2 border-amber-200 shadow-inner">
+            <div class="flex justify-between items-center text-sm font-bold text-gray-600 mb-1.5 px-1">
+                <div class="flex items-center gap-1 text-amber-700">
+                    <span>📖 문제</span>
+                    <span id="current-index" class="text-lg text-amber-800">1</span> / <span id="total-count">39</span>
+                </div>
+                <div class="flex items-center gap-1 text-emerald-600">
+                    <span>⭐ 맞힘</span>
+                    <span id="score" class="text-lg text-emerald-600">0</span>개
+                </div>
+                <div class="flex items-center gap-1 text-orange-600">
+                    <i class="fa-solid fa-stopwatch"></i>
+                    <span id="timer" class="text-base">00:00</span>
+                </div>
+            </div>
+
+            <!-- Visual Progress Bar -->
+            <div class="w-full bg-white h-4 rounded-full overflow-hidden p-0.5 border border-amber-200">
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-orange-400 h-full rounded-full transition-all duration-300" style="width: 2.5%;"></div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-container" class="space-y-4">
+            <!-- Retry Banner Mode indicator -->
+            <div id="retry-banner" class="hidden text-center bg-orange-100 border-2 border-orange-300 text-orange-800 rounded-xl py-1 px-3 text-xs font-bold animate-pulse">
+                🔁 틀린(몰랐던) 문제만 복습하는 중이에요!
+            </div>
+
+            <!-- Category Tag -->
+            <div class="text-center">
+                <span id="category-badge" class="bg-orange-100 text-orange-800 text-xs sm:text-sm px-3 py-1 rounded-xl font-bold border border-orange-200 shadow-sm inline-flex items-center gap-1">
+                    🏷️ 카테고리
+                </span>
+            </div>
+
+            <!-- Chosung & Answer Card -->
+            <div class="bg-gradient-to-b from-amber-50 to-orange-50 border-4 border-amber-200 rounded-3xl p-5 text-center shadow-md relative min-h-[170px] flex flex-col justify-center items-center gap-2">
+                
+                <!-- Chosung Text -->
+                <div id="chosung-display" class="text-4xl sm:text-5xl font-black text-amber-800 tracking-widest font-quiz drop-shadow">
+                    ㅊㅅㄱ
+                </div>
+
+                <!-- Answer Text (Initially Hidden) -->
+                <div id="answer-display" class="hidden text-3xl font-black text-emerald-600 font-quiz my-1 bg-white px-5 py-2 rounded-2xl border-3 border-emerald-300 shadow-sm bounce-fun">
+                    창세기
+                </div>
+
+                <!-- Easy Hint Display -->
+                <div id="hint-text" class="text-xs sm:text-sm text-amber-800 font-bold mt-1 bg-white/80 px-3 py-1.5 rounded-xl border border-amber-200 min-h-[2rem] flex items-center justify-center">
+                    <!-- Hint appears here -->
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="space-y-2">
+                <!-- Hint & Reveal Buttons -->
+                <div id="initial-controls" class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="showHint()" 
+                        class="py-3 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white rounded-2xl font-bold shadow-md border-b-4 border-amber-600 transition text-base flex items-center justify-center gap-1">
+                        💡 힌트!
+                    </button>
+                    <button type="button" onclick="revealAnswer()" 
+                        class="col-span-2 py-3 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-2xl font-bold shadow-md border-b-4 border-orange-700 transition text-base flex items-center justify-center gap-1 pulse-gentle">
+                        👀 정답 확인하기
+                    </button>
+                </div>
+
+                <!-- Pass / Fail Buttons (Shown after answer revealed) -->
+                <div id="next-controls" class="hidden grid grid-cols-2 gap-2">
+                    <button type="button" onclick="handleNext(false)" 
+                        class="py-3 bg-rose-400 hover:bg-rose-500 active:scale-95 text-white rounded-2xl font-bold shadow-md border-b-4 border-rose-600 transition text-base flex items-center justify-center gap-1">
+                        😅 몰랐어요
+                    </button>
+                    <button type="button" onclick="handleNext(true)" 
+                        class="py-3 bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white rounded-2xl font-bold shadow-md border-b-4 border-emerald-600 transition text-base flex items-center justify-center gap-1">
+                        👏 알아요!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-container" class="hidden text-center space-y-5 py-3">
+            <div class="text-6xl text-amber-500 bounce-fun">
+                🏆
+            </div>
+            <div>
+                <h2 class="text-3xl font-black text-amber-600 font-quiz">우와! 위대한 승리자!</h2>
+                <p class="text-gray-600 text-sm font-bold mt-1">구약성경 39권을 모두 탐험했어요! 🎉</p>
+            </div>
+
+            <div class="bg-amber-50 rounded-2xl p-4 text-left space-y-2 text-sm border-2 border-amber-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 font-bold">⏱️ 걸린 시간:</span>
+                    <span id="final-time" class="font-extrabold text-orange-600 text-base">00:00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 font-bold">⭐ 맞힌 개수:</span>
+                    <span id="final-score" class="font-extrabold text-emerald-600 text-base">0 / 39개</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 font-bold">💡 힌트 사용:</span>
+                    <span id="final-hints" class="font-extrabold text-amber-600 text-base">0번</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Retry vs Restart -->
+            <div class="space-y-2">
+                <button id="retry-failed-btn" onclick="retryFailedQuestions()" 
+                    class="hidden w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 active:scale-95 text-white rounded-2xl font-black shadow-lg border-b-4 border-orange-600 transition text-base flex items-center justify-center gap-2 font-quiz">
+                    ✏️ 틀린 문제만 다시 풀기 (<span id="failed-count">0</span>개)
+                </button>
+                <button onclick="restartGame()" 
+                    class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 active:scale-95 text-white rounded-2xl font-black shadow-lg border-b-4 border-orange-700 transition text-base flex items-center justify-center gap-2 font-quiz">
+                    🔄 처음부터 전체 다시 하기
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // 초등학교 저학년 눈높이에 맞춘 구약성경 39권 데이터 및 힌트
+        const rawOldTestamentData = [
+            { name: "창세기", chosung: "ㅊㅅㄱ", category: "율법서 (모세오경)", hint: "하나님이 세상을 처음 만드신 이야기예요 🌍" },
+            { name: "출애굽기", chosung: "ㅊㅇㄱㄱ", category: "율법서 (모세오경)", hint: "모세 할아버지가 홍해 바다를 가르고 이집트를 탈출해요 🌊" },
+            { name: "레위기", chosung: "ㄹㅇㄱ", category: "율법서 (모세오경)", hint: "하나님께 거룩하게 예배드리는 방법을 가르쳐줘요 🕊️" },
+            { name: "민수기", chosung: "ㅁㅅㄱ", category: "율법서 (모세오경)", hint: "광야에서 백성들의 수를 혜아리며 여행하는 이야기예요 ⛺" },
+            { name: "신명기", chosung: "ㅅㅁㄱ", category: "율법서 (모세오경)", hint: "가나안 땅에 들어가기 전 하나님의 말씀을 다시 강조해요 📜" },
+            { name: "여호수아", chosung: "ㅇㅎㅅㅇ", category: "역사서", hint: "여리고 성을 돌아서 무너뜨리고 약속의 땅을 차지해요 🎺" },
+            { name: "사사기", chosung: "ㅅㅅㄱ", category: "역사서", hint: "삼손이나 기드온 같은 영웅(사사)들이 나라를 구해요 ⚔️" },
+            { name: "룻기", chosung: "ㄹㄱ", category: "역사서", hint: "시어머니 나오미를 정성껏 섬긴 착한 룻의 이야기 🌾" },
+            { name: "사무엘상", chosung: "ㅅㅁㅇㅅ", category: "역사서", hint: "어린 다윗이 거인 골리앗을 물맷돌로 물리쳐요 🪨" },
+            { name: "사무엘하", chosung: "ㅅㅁㅇㅎ", category: "역사서", hint: "다윗이 왕이 되어 멋지게 나라를 다스리는 이야기 👑" },
+            { name: "열왕기상", chosung: "ㅇㅇㄱㅅ", category: "역사서", hint: "지혜로운 솔로몬 왕이 성전을 멋지게 지어요 🏰" },
+            { name: "열왕기하", chosung: "ㅇㅇㄱㅎ", category: "역사서", hint: "엘리야와 엘리사 선지자가 많은 기적을 보여줘요 ✨" },
+            { name: "역대상", chosung: "ㅇㄷㅅ", category: "역사서", hint: "아담부터 다윗 왕까지의 족보와 역사가 적혀있어요 📜" },
+            { name: "역대하", chosung: "ㅇㄷㅎ", category: "역사서", hint: "솔로몬 왕과 남쪽 유다 왕들의 이야기예요 🏛️" },
+            { name: "에스라", chosung: "ㅇㅅㄹ", category: "역사서", hint: "포로에서 돌아와 무너진 성전을 다시 지어요 🏗️" },
+            { name: "느헤미야", chosung: "ㄴㅎㅁㅇ", category: "역사서", hint: "예루살렘 성벽을 멋지게 다시 쌓아올려요 🧱" },
+            { name: "에스더", chosung: "ㅇㅅㄷ", category: "역사서", hint: "'죽으면 죽으리이다' 용감한 왕비가 민족을 구해요 👸" },
+            { name: "욥기", chosung: "ㅇㄱ", category: "시가서", hint: "엄청나게 힘든 일 속에서도 하나님을 계속 믿은 이야기 🙇‍♂️" },
+            { name: "시편", chosung: "ㅅㅍ", category: "시가서", hint: "하나님을 찬양하는 아름다운 노래와 시가 모여있어요 🎵" },
+            { name: "잠언", chosung: "ㅈㅇ", category: "시가서", hint: "솔로몬 왕이 들려주는 지혜로운 보물 말씀들 💡" },
+            { name: "전도서", chosung: "ㅈㄷㅅ", category: "시가서", hint: "하나님 없는 삶은 헛되니 하나님을 기억하라고 해요 ☀️" },
+            { name: "아가", chosung: "ㅇㄱ", category: "시가서", hint: "하나님과 우리 사이의 아름다운 사랑 노래예요 💕" },
+            { name: "이사야", chosung: "ㅇㅅㅇ", category: "대선지서", hint: "예수님이 이 땅에 오실 것을 미리 예언한 책 🌟" },
+            { name: "예레미야", chosung: "ㅇㄹㅁㅇ", category: "대선지서", hint: "백성들을 위해 눈물을 흘리며 기도한 '눈물의 선지자' 💧" },
+            { name: "예레미야애가", chosung: "ㅇㄹㅁㅇㅇㄱ", category: "대선지서", hint: "슬픔 속에서도 하나님의 신실하심을 노래해요 🎻" },
+            { name: "에스겔", chosung: "ㅇㅅㄱ", category: "대선지서", hint: "마른 뼈들이 다시 살아나는 신기한 환상을 봐요 🦴" },
+            { name: "다니엘", chosung: "ㄷㄴㅇ", category: "대선지서", hint: "사자 굴 속에서도 하나님이 지켜주셨어요 🦁" },
+            { name: "호세아", chosung: "ㅎㅅㅇ", category: "소선지서", hint: "끝까지 참으시고 사랑하시는 하나님의 사랑을 보여줘요 ❤️" },
+            { name: "요엘", chosung: "ㅇㅇ", category: "소선지서", hint: "성령님을 모든 사람에게 부어주실 날을 약속해요 🕊️" },
+            { name: "아모스", chosung: "ㅇㅁㅅ", category: "소선지서", hint: "정의를 물처럼, 공의를 강물처럼 흐르게 하라고 해요 🌊" },
+            { name: "오바댜", chosung: "ㅇㅂㄷ", category: "소선지서", hint: "교만한 마음을 버리라고 경고하는 아주 짧은 책 🏔️" },
+            { name: "요나", chosung: "ㅇㄴ", category: "소선지서", hint: "큰 물고기 배속에 들어갔다가 삼일 만에 나왔어요 🐋" },
+            { name: "미가", chosung: "ㅁㄱ", category: "소선지서", hint: "예수님이 베들레헴 마을에서 태어나실 것을 예언했어요 👶" },
+            { name: "나훔", chosung: "ㄴㅎ", category: "소선지서", hint: "하나님은 우리의 든든한 산성이 되어주신다고 해요 🏰" },
+            { name: "하박국", chosung: "ㅎㅂㄱ", category: "소선지서", hint: "'의인은 믿음으로 말미암아 살리라' 유명한 말씀이 나와요 🌿" },
+            { name: "스바냐", chosung: "ㅅㅂㄴ", category: "소선지서", hint: "하나님이 우리 때문에 기뻐서 노래를 부르신대요 🎶" },
+            { name: "학개", chosung: "ㅎㄱ", category: "소선지서", hint: "하나님의 성전을 다시 먼저 지으라고 용기를 줘요 🏛️" },
+            { name: "스가랴", chosung: "ㅅㄱㄹ", category: "소선지서", hint: "겸손하게 나귀를 타고 오실 왕을 보여줘요 🫏" },
+            { name: "말라기", chosung: "ㅁㄹㄱ", category: "소선지서", hint: "구약성경의 맨 마지막 책! 구원자를 기다리게 해요 🌅" }
+        ];
+
+        let quizData = [];
+        let failedQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let hintCount = 0;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let isRetryMode = false;
+
+        const currentIndexEl = document.getElementById("current-index");
+        const totalCountEl = document.getElementById("total-count");
+        const scoreEl = document.getElementById("score");
+        const timerEl = document.getElementById("timer");
+        const progressBar = document.getElementById("progress-bar");
+        const categoryBadge = document.getElementById("category-badge");
+        const chosungDisplay = document.getElementById("chosung-display");
+        const answerDisplay = document.getElementById("answer-display");
+        const hintText = document.getElementById("hint-text");
+        const retryBanner = document.getElementById("retry-banner");
+
+        const initialControls = document.getElementById("initial-controls");
+        const nextControls = document.getElementById("next-controls");
+
+        const gameContainer = document.getElementById("game-container");
+        const resultContainer = document.getElementById("result-container");
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        window.onload = function() {
+            initGame();
+        };
+
+        function initGame() {
+            quizData = shuffleArray(rawOldTestamentData);
+            failedQuestions = [];
+            isRetryMode = false;
+            currentIndex = 0;
+            score = 0;
+            hintCount = 0;
+            scoreEl.textContent = "0";
+            
+            resultContainer.classList.add("hidden");
+            gameContainer.classList.remove("hidden");
+            retryBanner.classList.add("hidden");
+            
+            startTimer();
+            loadQuiz();
+        }
+
+        function retryFailedQuestions() {
+            quizData = shuffleArray(failedQuestions);
+            failedQuestions = [];
+            isRetryMode = true;
+            currentIndex = 0;
+            score = 0;
+            scoreEl.textContent = "0";
+            
+            resultContainer.classList.add("hidden");
+            gameContainer.classList.remove("hidden");
+            retryBanner.classList.remove("hidden");
+            
+            loadQuiz();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            secondsElapsed = 0;
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                timerEl.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function loadQuiz() {
+            const currentItem = quizData[currentIndex];
+            
+            currentIndexEl.textContent = currentIndex + 1;
+            totalCountEl.textContent = quizData.length;
+            categoryBadge.innerHTML = `🏷️ ${currentItem.category}`;
+            chosungDisplay.textContent = currentItem.chosung;
+            answerDisplay.textContent = currentItem.name;
+            
+            answerDisplay.classList.add("hidden");
+            hintText.innerHTML = "✨ 힌트가 필요하면 아래 '힌트!' 버튼을 누르세요";
+
+            initialControls.classList.remove("hidden");
+            nextControls.classList.add("hidden");
+            
+            const progressPercent = ((currentIndex + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+        }
+
+        function showHint() {
+            const currentItem = quizData[currentIndex];
+            hintText.innerHTML = `💡 ${currentItem.hint}`;
+            hintCount++;
+        }
+
+        function revealAnswer() {
+            answerDisplay.classList.remove("hidden");
+            initialControls.classList.add("hidden");
+            nextControls.classList.remove("hidden");
+        }
+
+        function handleNext(isKnown) {
+            if (isKnown) {
+                score++;
+                scoreEl.textContent = score;
+            } else {
+                failedQuestions.push(quizData[currentIndex]);
+            }
+
+            currentIndex++;
+            if (currentIndex < quizData.length) {
+                loadQuiz();
+            } else {
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            if (!isRetryMode) {
+                clearInterval(timerInterval);
+            }
+            gameContainer.classList.add("hidden");
+            resultContainer.classList.remove("hidden");
+
+            const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(secondsElapsed % 60).padStart(2, '0');
+
+            document.getElementById("final-time").textContent = `${mins}:${secs}`;
+            document.getElementById("final-score").textContent = `${score} / ${quizData.length}개`;
+            document.getElementById("final-hints").textContent = `${hintCount}번`;
+
+            const retryBtn = document.getElementById("retry-failed-btn");
+            const failedCountSpan = document.getElementById("failed-count");
+
+            if (failedQuestions.length > 0) {
+                failedCountSpan.textContent = failedQuestions.length;
+                retryBtn.classList.remove("hidden");
+            } else {
+                retryBtn.classList.add("hidden");
+            }
+        }
+
+        function restartGame() {
+            initGame();
+        }
+    </script>
+</body>
+</html>
