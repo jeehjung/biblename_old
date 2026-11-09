@@ -302,7 +302,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 <div class="modal hidden" id="quitModal">
   <div class="box">
     <h3>그만할까요?</h3>
-    <p>이번 판 기록은 저장되지 않아요.</p>
+    <p>지금까지 푼 만큼 경험치가 저장돼요.</p>
     <div class="row">
       <button class="btn btn-plain" id="stayBtn">계속하기</button>
       <button class="btn btn-no" id="leaveBtn" style="font-size:17px">그만하기</button>
@@ -453,7 +453,7 @@ const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: []
 let online = null, friends = null;
 
 async function api(path, body) {
-  const r = await fetch(API + path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  const r = await fetch(API + path, body ? { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
   if (!r.ok) throw new Error("HTTP " + r.status);
   return r.json();
 }
@@ -576,12 +576,15 @@ const sfx = { flip: () => tone([440, 660], .07), hint: () => tone([880], .1, "si
 
 /* ---------- 게임 ---------- */
 let deck = [], idx = 0, score = 0, combo = 0, maxCombo = 0, right = 0, hintsUsed = 0, retryMode = false, roundWrong = [], roundFixed = [];
+// 이번 판에서 이미 저장한 몫 (중간에 그만두거나 앱을 닫아도 푼 만큼은 저장)
+let savedXp = 0, savedWrong = [], savedFixed = [], startXp = 0, startBest = 0, startCombo = 0;
 
 function startGame(retry) {
   retryMode = retry;
   const pool = retry ? books.filter(b => local.me.wrong.includes(b.name)) : books;
   if (!pool.length) return;
   deck = shuffle(pool); idx = 0; score = 0; combo = 0; maxCombo = 0; right = 0; roundWrong = []; roundFixed = [];
+  savedXp = 0; savedWrong = []; savedFixed = []; startXp = local.me.xp; startBest = local.me.best; startCombo = local.me.bestCombo;
   $("combo").textContent = "";
   updateScoreTag();
   show("game"); renderCard();
@@ -649,7 +652,25 @@ function judge(ok) {
   const c = $("combo");
   c.innerHTML = combo >= 2 ? ic("flame") + combo + " 콤보!" : "";
   c.classList.remove("pop"); void c.offsetWidth; if (combo >= 2) c.classList.add("pop");
-  setTimeout(() => { idx++; idx < deck.length ? renderCard() : finish(); }, 380);
+  idx++;
+  setTimeout(() => { if ($("game").classList.contains("hidden")) return; idx < deck.length ? renderCard() : finish(); }, 380);
+}
+
+// 지금까지 푼 것 중 아직 저장하지 않은 몫을 내 기록에 반영하고 서버로 보낸다
+function checkpoint(final) {
+  const m = local.me;
+  const xp = score - savedXp;
+  const fixed = roundFixed.filter(n => !roundWrong.includes(n));
+  const addWrong = roundWrong.filter(n => !savedWrong.includes(n));
+  const removeWrong = fixed.filter(n => !savedFixed.includes(n));
+  if (!final && !xp && !addWrong.length && !removeWrong.length && maxCombo <= m.bestCombo) return;
+  m.xp += xp;
+  if (final) { m.plays++; if (!retryMode) m.best = Math.max(m.best, score); }
+  m.bestCombo = Math.max(m.bestCombo, maxCombo);
+  m.wrong = books.map(b => b.name).filter(n => (m.wrong.includes(n) && !removeWrong.includes(n)) || addWrong.includes(n));
+  queue({ xp, plays: final ? 1 : 0, score: final && !retryMode ? score : 0, combo: maxCombo, addWrong, removeWrong });
+  savedXp = score; savedWrong = [...roundWrong]; savedFixed = fixed;
+  flush();
 }
 
 /* ---------- 결과 ---------- */
@@ -657,17 +678,9 @@ function finish() {
   $("bar").style.width = "100%";
   const m = local.me, total = deck.length, rate = right / total;
   const stars = rate === 1 ? 3 : rate >= .7 ? 2 : rate >= .4 ? 1 : 0;
-  const beforeLv = levelOf(m.xp);
-  const newRec = (!retryMode && score > m.best) || maxCombo > m.bestCombo;
-  const removeWrong = roundFixed.filter(n => !roundWrong.includes(n));
-
-  // 내 기록 바로 반영 (화면용) + 서버로 보낼 몫 쌓기
-  m.xp += score; m.plays++;
-  if (!retryMode) m.best = Math.max(m.best, score);
-  m.bestCombo = Math.max(m.bestCombo, maxCombo);
-  m.wrong = books.map(b => b.name).filter(n => (m.wrong.includes(n) && !removeWrong.includes(n)) || roundWrong.includes(n));
-  queue({ xp: score, plays: 1, score: retryMode ? 0 : score, combo: maxCombo, addWrong: roundWrong, removeWrong });
-  flush();
+  const beforeLv = levelOf(startXp);
+  const newRec = (!retryMode && score > startBest) || maxCombo > startCombo;
+  checkpoint(true);
 
   const afterLv = levelOf(m.xp);
   [...$("stars").children].forEach((s, i) => { s.className = i < stars ? "lit" : ""; s.style.animationDelay = (i * .2) + "s"; });
@@ -727,7 +740,9 @@ $("noBtn").onclick = () => judge(false);
 $("soundBtn").onclick = () => { local.sound = !local.sound; persist(); renderMe(); };
 $("quitBtn").onclick = () => $("quitModal").classList.remove("hidden");
 $("stayBtn").onclick = () => $("quitModal").classList.add("hidden");
-$("leaveBtn").onclick = () => { $("quitModal").classList.add("hidden"); renderHome(); };
+$("leaveBtn").onclick = () => { $("quitModal").classList.add("hidden"); checkpoint(false); renderHome(); };
+// 문제를 풀다가 앱을 닫거나 다른 앱으로 넘어가도 푼 만큼 저장
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && !$("game").classList.contains("hidden")) checkpoint(false); });
 window.addEventListener("online", () => flush().then(() => { if (!$("home").classList.contains("hidden")) renderHome(); }));
 
 if (local.name && local.me) renderHome(); else openName(false);
