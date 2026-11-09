@@ -27,6 +27,13 @@ button,input{font:inherit}
 button{cursor:pointer;border:0;touch-action:manipulation}
 .app{max-width:480px;margin:0 auto;padding:16px 16px 40px;min-height:100vh}
 .hidden{display:none!important}
+.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ic.f{fill:currentColor;stroke:none}
+.btn .ic{margin-right:6px}
+.pill .ic{margin-right:5px}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.medal{width:26px;height:26px}
 
 .btn{display:block;width:100%;border-radius:20px;padding:17px 14px;font-weight:900;font-size:20px;transition:transform .08s}
 .btn:active{transform:translateY(4px)}
@@ -42,7 +49,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 /* 홈 */
 .top{display:flex;justify-content:space-between;align-items:center}
 .hero{text-align:center;color:#fff;padding:14px 0 12px}
-.hero .logo{font-size:50px;line-height:1;filter:drop-shadow(0 4px 0 #0003);animation:bob 2.4s ease-in-out infinite}
+.hero .logo{width:78px;height:78px;margin:0 auto;line-height:1;filter:drop-shadow(0 4px 0 #0003);animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-8px)}}
 .hero .church{display:inline-block;margin-top:10px;background:#ffffff2b;border-radius:99px;padding:5px 14px;font-weight:900;font-size:16px}
 .hero h1{font-size:32px;margin:8px 0 2px;letter-spacing:-1px;text-shadow:0 3px 0 #0003}
@@ -59,29 +66,32 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .xpbar{height:13px;background:#ece6ff;border-radius:99px;overflow:hidden;margin-top:8px}
 .xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#7ef0c4);border-radius:99px;transition:width .6s}
 .xptext{font-size:12px;color:var(--muted);font-weight:700;margin-top:5px;line-height:1.35}
+.sync .ic{width:14px;height:14px;margin-right:3px}
 .sync{font-size:11px;font-weight:800;color:var(--muted);margin-top:4px}
 .chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
 .chip{background:#f3efff;border-radius:14px;padding:9px 4px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
 .chip b{display:block;font-size:20px;color:var(--ink)}
 .howto{display:flex;gap:6px;color:#fff;font-weight:800;font-size:13px;text-align:center;margin:16px 0}
 .howto div{flex:1;background:#ffffff1f;border-radius:14px;padding:10px 4px}
-.howto span{display:block;font-size:24px;margin-bottom:3px}
+.howto span{display:grid;place-items:center;width:40px;height:40px;margin:0 auto 5px;border-radius:12px;background:#ffffff26;font-size:22px}
 .stack{display:grid;gap:14px}
 .badge{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:1px 9px;font-size:15px;margin-left:6px;vertical-align:2px}
 
 .friends{margin-top:22px}
+.friends h2 .ttl{display:flex;align-items:center;gap:8px}
 .friends h2{color:#fff;font-size:20px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
 .friends h2 button{font-size:13px}
 .flist{display:grid;gap:8px}
 .frow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:18px;padding:6px 12px 6px 6px;box-shadow:0 4px 0 #0002}
 .frow.mine{outline:3px solid var(--gold)}
-.frow .rank{width:22px;text-align:center;font-weight:1000;color:var(--muted);flex:none}
+.frow .rank{width:28px;display:grid;place-items:center;text-align:center;font-weight:1000;color:var(--muted);flex:none}
 .frow .mini{width:52px;height:60px;flex:none}
 .frow .who{flex:1;min-width:0}
 .frow .who b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .frow .who small{color:var(--sky2);font-weight:800}
 .frow .xp{font-weight:900;color:var(--muted);font-size:13px;text-align:right;flex:none}
 .frow .xp b{display:block;color:var(--ink);font-size:16px}
+.fempty .ic{margin-right:6px}
 .fempty{color:#fff;opacity:.85;text-align:center;font-weight:700;padding:14px;background:#ffffff1a;border-radius:16px}
 
 /* 이름 */
@@ -101,7 +111,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .progress{height:12px;background:#ffffff2b;border-radius:99px;overflow:hidden;margin:12px 0 6px}
 .progress i{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .3s}
 .counter{color:#fff;text-align:center;font-weight:800;font-size:14px;opacity:.9}
-.combo{height:30px;text-align:center;color:var(--gold);font-weight:1000;font-size:22px;text-shadow:0 2px 0 #0004}
+.combo{height:30px;display:flex;justify-content:center;align-items:center;gap:6px;color:var(--gold);font-weight:1000;font-size:22px;text-shadow:0 2px 0 #0004}
 .pop{animation:pop .35s}
 @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 .scene{perspective:1100px;margin:6px 0 16px}
@@ -114,7 +124,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .write{font-weight:800;color:var(--muted);font-size:15px}
 .same{margin-top:10px;font-size:13px;font-weight:800;color:#c2410c;background:#ffedd5;border-radius:12px;padding:6px 10px}
 .hintbox{margin-top:12px;width:100%;display:grid;gap:7px}
-.hint{background:#e9fbf3;color:#11684a;border-radius:14px;padding:10px 12px;font-weight:800;font-size:16px;animation:pop .3s}
+.hint{display:flex;gap:8px;align-items:flex-start;text-align:left;background:#e9fbf3;color:#11684a;border-radius:14px;padding:10px 12px;font-weight:800;font-size:16px;animation:pop .3s}
 .answer{font-size:clamp(42px,13vw,58px);font-weight:1000;margin:14px 0 6px;letter-spacing:2px}
 .order{font-weight:800;color:var(--muted)}
 .check{font-weight:900;font-size:17px;margin-top:16px}
@@ -131,17 +141,20 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 /* 결과 */
 .result{text-align:center;margin-top:16px}
 .stars{font-size:46px;letter-spacing:4px;margin:2px 0}
-.stars span{display:inline-block;opacity:.18;filter:grayscale(1)}
-.stars span.lit{opacity:1;filter:none;animation:pop .5s backwards}
+.stars{display:flex;justify-content:center;gap:8px}
+.stars span{display:block;width:52px;height:52px;color:#e4dcff}
+.stars span.lit{color:var(--gold);filter:drop-shadow(0 3px 0 var(--gold-d));animation:pop .5s backwards}
+.stars span:nth-child(2){width:64px;height:64px;margin-top:-10px}
+.stars .ic{width:100%;height:100%}
 .result h2{margin:4px 0 2px;font-size:27px}
-.newrec{display:inline-block;background:var(--red);color:#fff;font-weight:900;border-radius:99px;padding:4px 12px;font-size:13px;margin-top:6px;animation:pop .5s}
+.newrec{display:inline-flex;align-items:center;gap:5px;background:var(--red);color:#fff;font-weight:900;border-radius:99px;padding:4px 12px;font-size:13px;margin-top:6px;animation:pop .5s}
 .levelup{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fff6c9,#ffe083);border-radius:20px;padding:8px 12px;margin:12px 0 0;text-align:left;animation:pop .6s}
 .levelup .avatar{width:80px;height:94px;flex:none}
 .levelup b{display:block;font-size:20px;color:#8a5a00}
 .levelup span{font-weight:800}
 .rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
 .wrongs{text-align:left;background:#fff1f1;border-radius:18px;padding:12px;margin-bottom:6px}
-.wrongs b{display:block;margin-bottom:8px;color:var(--red-d)}
+.wrongs b{display:flex;align-items:center;gap:6px;margin-bottom:8px;color:var(--red-d)}
 .wlist{display:flex;flex-wrap:wrap;gap:6px}
 .wlist span{background:#fff;border-radius:10px;padding:6px 9px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #0001}
 .wlist small{color:var(--muted);margin-right:4px}
@@ -162,18 +175,18 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 
 <!-- 이름 입력 -->
 <section id="nameScreen" class="hidden">
-  <div class="top"><span class="pill">📖 창세기 ~ 아가 22권</span></div>
+  <div class="top"><span class="pill"><i data-ic="book"></i>창세기 ~ 아가 22권</span></div>
   <header class="hero">
-    <div class="logo">⛪</div>
+    <div class="logo"><i data-ic="church"></i></div>
     <div class="church">속초교회 아동부</div>
     <h1>초성 성경 퀴즈</h1>
   </header>
   <div class="panel namebox">
-    <label for="nameInput">내 이름을 써 주세요 ✏️</label>
+    <label for="nameInput">내 이름을 써 주세요</label>
     <input id="nameInput" maxlength="10" autocomplete="off" placeholder="예: 김하늘">
     <div class="err" id="nameErr"></div>
     <div class="note">같은 이름을 쓰면 어느 휴대폰에서 해도<br>내 다윗의 레벨이 그대로 이어져요!</div>
-    <button class="btn btn-gold" id="nameOk">🛡️ 내 다윗 만나러 가기</button>
+    <button class="btn btn-gold" id="nameOk"><i data-ic="shield"></i>내 다윗 만나러 가기</button>
     <button class="btn btn-plain hidden" id="nameCancel" style="margin-top:12px;font-size:16px">취소</button>
   </div>
   <div class="pick hidden" id="pickBox">
@@ -185,11 +198,11 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 <!-- 홈 -->
 <section id="home" class="hidden">
   <div class="top">
-    <span class="pill">📖 창세기 ~ 아가 22권</span>
-    <button class="pill" id="soundBtn">🔊 소리</button>
+    <span class="pill"><i data-ic="book"></i>창세기 ~ 아가 22권</span>
+    <button class="pill" id="soundBtn">소리</button>
   </div>
   <header class="hero">
-    <div class="logo">⛪</div>
+    <div class="logo"><i data-ic="church"></i></div>
     <div class="church">속초교회 아동부</div>
     <h1>초성 성경 퀴즈</h1>
     <p>초성만 보고 성경 이름을 맞혀 봐!</p>
@@ -214,18 +227,18 @@ button{cursor:pointer;border:0;touch-action:manipulation}
   </div>
 
   <div class="howto">
-    <div><span>👀</span>초성 보기</div>
-    <div><span>✏️</span>종이에 쓰기</div>
-    <div><span>🔄</span>뒤집어 확인</div>
+    <div><span><i data-ic="eye"></i></span>초성 보기</div>
+    <div><span><i data-ic="pencil"></i></span>종이에 쓰기</div>
+    <div><span><i data-ic="flip"></i></span>뒤집어 확인</div>
   </div>
 
   <div class="stack">
-    <button class="btn btn-gold" id="startBtn">🚀 22권 카드 도전!</button>
-    <button class="btn btn-blue" id="retryHomeBtn">🔁 틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
+    <button class="btn btn-gold" id="startBtn"><i data-ic="play"></i>22권 카드 도전!</button>
+    <button class="btn btn-blue" id="retryHomeBtn"><i data-ic="retry"></i>틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
   </div>
 
   <div class="friends">
-    <h2>🛡️ 우리 아동부 다윗들 <button class="pill" id="refreshBtn">↻ 새로고침</button></h2>
+    <h2><span class="ttl"><i data-ic="shield"></i>우리 아동부 다윗들</span> <button class="pill" id="refreshBtn"><i data-ic="refresh"></i>새로고침</button></h2>
     <div class="flist" id="friendList"></div>
   </div>
 </section>
@@ -233,7 +246,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 <!-- 게임 -->
 <section id="game" class="hidden">
   <div class="gamehead">
-    <button class="pill" id="quitBtn">✕ 그만</button>
+    <button class="pill" id="quitBtn"><i data-ic="x"></i>그만</button>
     <span class="pill" id="modeTag"></span>
   </div>
   <div class="progress"><i id="bar"></i></div>
@@ -244,8 +257,8 @@ button{cursor:pointer;border:0;touch-action:manipulation}
       <div class="face front">
         <span class="tag" id="cardTag">초성 카드</span>
         <div class="initials" id="initials"></div>
-        <div class="write">✏️ 종이에 써 보고 카드를 뒤집어!</div>
-        <div class="same hidden" id="sameFront">👀 이 초성은 성경이 2권 있어요! 힌트로 구별해 봐</div>
+        <div class="write"><i data-ic="pencil"></i> 종이에 써 보고 카드를 뒤집어!</div>
+        <div class="same hidden" id="sameFront"><i data-ic="eye"></i> 이 초성은 성경이 2권 있어요! 힌트로 구별해 봐</div>
         <div class="hintbox" id="hintBox"></div>
       </div>
       <div class="face back">
@@ -258,22 +271,22 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     </div>
   </div>
   <div class="controls" id="frontControls">
-    <button class="btn btn-blue" id="hintBtn">💡 힌트</button>
-    <button class="btn btn-gold" id="flipBtn">🔄 뒤집기</button>
+    <button class="btn btn-blue" id="hintBtn">힌트</button>
+    <button class="btn btn-gold" id="flipBtn"><i data-ic="flip"></i>뒤집기</button>
   </div>
   <div class="judge hidden" id="judgeControls">
-    <button class="btn btn-no" id="noBtn">❌ 틀렸어</button>
-    <button class="btn btn-ok" id="okBtn">⭕ 맞았어</button>
+    <button class="btn btn-no" id="noBtn"><i data-ic="x"></i>틀렸어</button>
+    <button class="btn btn-ok" id="okBtn"><i data-ic="check"></i>맞았어</button>
   </div>
 </section>
 
 <!-- 결과 -->
 <section id="end" class="hidden">
   <div class="panel result">
-    <div class="stars" id="stars"><span>⭐</span><span>⭐</span><span>⭐</span></div>
+    <div class="stars" id="stars"><span><i data-ic="star"></i></span><span><i data-ic="star"></i></span><span><i data-ic="star"></i></span></div>
     <h2 id="endTitle">도전 완료!</h2>
     <div id="endSub" style="font-weight:700;color:var(--muted)"></div>
-    <div id="newRec" class="newrec hidden">🎉 최고 기록!</div>
+    <div id="newRec" class="newrec hidden"><i data-ic="sparkle"></i>최고 기록!</div>
     <div class="levelup hidden" id="levelUp">
       <div class="avatar" id="luAvatar"></div>
       <div><b id="luTitle">레벨 업!</b><span id="luItem"></span></div>
@@ -284,13 +297,13 @@ button{cursor:pointer;border:0;touch-action:manipulation}
       <div class="chip">최고 콤보<b id="rCombo">0</b></div>
     </div>
     <div class="wrongs hidden" id="wrongBox">
-      <b>📝 다시 볼 카드</b>
+      <b><i data-ic="note"></i>다시 볼 카드</b>
       <div class="wlist" id="wrongList"></div>
     </div>
     <div class="stack" style="margin-top:14px">
-      <button class="btn btn-blue" id="retryEndBtn">🔁 틀린 카드 다시 풀기</button>
-      <button class="btn btn-gold" id="againBtn">🚀 22권 다시 도전</button>
-      <button class="btn btn-plain" id="homeBtn">🏠 처음 화면</button>
+      <button class="btn btn-blue" id="retryEndBtn">틀린 카드 다시 풀기</button>
+      <button class="btn btn-gold" id="againBtn"><i data-ic="play"></i>22권 다시 도전</button>
+      <button class="btn btn-plain" id="homeBtn"><i data-ic="home"></i>처음 화면</button>
     </div>
   </div>
 </section>
@@ -309,6 +322,50 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 
 <script>
 const API = "https://bible-quiz-api.jeeh.workers.dev";
+
+
+/* ---------- 아이콘 (직접 그린 선 아이콘) ---------- */
+const ICON = {
+  book: '<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20v-3"/><path d="M9 7h7"/>',
+  volume: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
+  mute: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/>',
+  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  pencil: '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="m14.5 5.5 3 3"/>',
+  flip: '<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>',
+  retry: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  play: '<path class="fill" d="M7 4.5v15a1 1 0 0 0 1.5.9l12-7.5a1 1 0 0 0 0-1.8l-12-7.5A1 1 0 0 0 7 4.5z" fill="currentColor" stroke="none"/>',
+  shield: '<path d="M12 3 4.5 6v6c0 4.6 3.2 7.9 7.5 9 4.3-1.1 7.5-4.4 7.5-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  bulb: '<path d="M9 18h6"/><path d="M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-4 11.6c.8.7 1 1.4 1 2.4h6c0-1 .2-1.7 1-2.4a6.5 6.5 0 0 0-4-11.6z"/>',
+  check: '<path d="m4.5 12.5 5 5 10-11"/>',
+  x: '<path d="M6 6l12 12"/><path d="M18 6 6 18"/>',
+  flame: '<path d="M12 2.5c.6 3.6 5.5 5.6 5.5 11a5.5 5.5 0 0 1-11 0c0-2.6 1.2-4 2.5-5 .1 2 1 3.2 2.3 3.6-.6-3.4-.2-6.6.7-9.6z" fill="currentColor" stroke="none"/>',
+  home: '<path d="m3 11 9-7.5 9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/>',
+  cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9A6.5 6.5 0 0 1 18.8 9 4.8 4.8 0 0 1 18 18.5z"/><path d="m9.5 13.5 2 2 3.5-4"/>',
+  cloudOff: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9A6.5 6.5 0 0 1 18.8 9 4.8 4.8 0 0 1 18 18.5z"/><path d="M3 3l18 18"/>',
+  loader: '<path d="M12 3a9 9 0 1 0 9 9"/>',
+  star: '<path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z" fill="currentColor" stroke="none"/>',
+  sparkle: '<path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z" fill="currentColor" stroke="none"/><path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor" stroke="none"/>',
+  note: '<path d="M6 3h9l4 4v14H6z"/><path d="M14.5 3v4.5H19"/><path d="M9 12h7"/><path d="M9 16h5"/>',
+  arrowUp: '<path d="M12 20V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/>',
+  edit: '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/>'
+};
+const ic = (n, extra = "") => `<svg class="ic ${extra}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+const CHURCH = `<svg viewBox="0 0 80 80" width="100%" height="100%" aria-hidden="true">
+  <circle cx="40" cy="44" r="34" fill="#ffffff" opacity=".14"/>
+  <path d="M38.5 4h3v8h5v3h-5v6h-3v-6h-5v-3h5z" fill="#ffd54a"/>
+  <path d="M30 32 40 20l10 12z" fill="#ff7eb6"/><rect x="31" y="31" width="18" height="16" fill="#fffaf0"/>
+  <circle cx="40" cy="38" r="3.6" fill="#4cc3ff"/>
+  <path d="M10 48 24 34h32l14 14z" fill="#6a3fd1"/><rect x="14" y="47" width="52" height="25" rx="2" fill="#fffaf0"/>
+  <path d="M34 72V62a6 6 0 0 1 12 0v10z" fill="#c58a00"/>
+  <rect x="20" y="54" width="7" height="9" rx="3.5" fill="#4cc3ff"/><rect x="53" y="54" width="7" height="9" rx="3.5" fill="#4cc3ff"/>
+  <rect x="8" y="71" width="64" height="4" rx="2" fill="#3fd6a0"/>
+</svg>`;
+const medal = (i) => {
+  const c = [["#ffd54a", "#c58a00"], ["#e3e8ef", "#98a4b5"], ["#f0a46b", "#b5652b"]][i];
+  return `<svg class="medal" viewBox="0 0 26 26" aria-label="${i + 1}등"><circle cx="13" cy="13" r="11.5" fill="${c[0]}" stroke="${c[1]}" stroke-width="2"/><text x="13" y="17.5" text-anchor="middle" font-size="12" font-weight="900" fill="#5a3d00" font-family="system-ui,sans-serif">${i + 1}</text></svg>`;
+};
+document.querySelectorAll("[data-ic]").forEach(e => { e.outerHTML = e.dataset.ic === "church" ? CHURCH : ic(e.dataset.ic); });
 
 /* ---------- 성경 22권 ---------- */
 const BOOKS = [
@@ -343,16 +400,16 @@ const twins = b => books.filter(x => x.cho === b.cho && x.name !== b.name);
 /* ---------- 다윗 레벨과 장비 ---------- */
 const NEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
 const TIERS = [
-  { title: "목동 다윗",     item: "🪨 물맷돌과 지팡이", staff: 1 },
-  { title: "나무 칼 다윗",   item: "🗡️ 나무 칼", sword: "wood" },
-  { title: "나무 방패 다윗", item: "🛡️ 나무 방패", sword: "wood", shield: "wood" },
-  { title: "가죽 갑옷 다윗", item: "🦺 가죽 갑옷", sword: "wood", shield: "wood", armor: "leather" },
-  { title: "철 칼 다윗",     item: "⚔️ 철 칼과 철 방패", sword: "iron", shield: "iron", armor: "leather" },
-  { title: "철 갑옷 다윗",   item: "🪖 철 갑옷과 투구", sword: "iron", shield: "iron", armor: "iron", helm: "iron" },
-  { title: "은빛 기사 다윗", item: "✨ 은빛 장비 세트", sword: "silver", shield: "silver", armor: "silver", helm: "silver" },
-  { title: "황금 용사 다윗", item: "🌟 황금 장비 세트", sword: "gold", shield: "gold", armor: "gold", helm: "gold" },
-  { title: "망토 장군 다윗", item: "🧣 붉은 망토", sword: "gold", shield: "gold", armor: "gold", helm: "gold", cape: 1 },
-  { title: "왕 다윗",       item: "👑 왕관", sword: "gold", shield: "gold", armor: "gold", crown: 1, cape: 1, glow: 1 }
+  { title: "목동 다윗",     item: "물맷돌과 지팡이", staff: 1 },
+  { title: "나무 칼 다윗",   item: "나무 칼", sword: "wood" },
+  { title: "나무 방패 다윗", item: "나무 방패", sword: "wood", shield: "wood" },
+  { title: "가죽 갑옷 다윗", item: "가죽 갑옷", sword: "wood", shield: "wood", armor: "leather" },
+  { title: "철 칼 다윗",     item: "철 칼과 철 방패", sword: "iron", shield: "iron", armor: "leather" },
+  { title: "철 갑옷 다윗",   item: "철 갑옷과 투구", sword: "iron", shield: "iron", armor: "iron", helm: "iron" },
+  { title: "은빛 기사 다윗", item: "은빛 장비 세트", sword: "silver", shield: "silver", armor: "silver", helm: "silver" },
+  { title: "황금 용사 다윗", item: "황금 장비 세트", sword: "gold", shield: "gold", armor: "gold", helm: "gold" },
+  { title: "망토 장군 다윗", item: "붉은 망토", sword: "gold", shield: "gold", armor: "gold", helm: "gold", cape: 1 },
+  { title: "왕 다윗",       item: "왕관", sword: "gold", shield: "gold", armor: "gold", crown: 1, cape: 1, glow: 1 }
 ];
 const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
 const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
@@ -451,14 +508,14 @@ async function openName(canCancel) {
 async function chooseName(raw) {
   const n = cleanName(raw);
   if (!validName(n)) { $("nameErr").textContent = "한글·영문·숫자로 1~10글자를 써 주세요"; return; }
-  $("nameOk").disabled = true; $("nameOk").textContent = "⏳ 불러오는 중...";
+  $("nameOk").disabled = true; $("nameOk").innerHTML = ic("loader", "spin") + "불러오는 중...";
   await flush();
   local.name = n;
   local.me = blank(n);
   try { const r = await api("/player?name=" + encodeURIComponent(n)); local.me = r.player; online = true; }
   catch (e) { online = false; }
   persist();
-  $("nameOk").disabled = false; $("nameOk").textContent = "🛡️ 내 다윗 만나러 가기";
+  $("nameOk").disabled = false; $("nameOk").innerHTML = ic("shield") + "내 다윗 만나러 가기";
   renderHome();
 }
 
@@ -472,28 +529,28 @@ function renderMe() {
   if (lv < NEED.length) {
     const lo = NEED[lv - 1], hi = NEED[lv];
     $("xpFill").style.width = ((m.xp - lo) / (hi - lo) * 100) + "%";
-    $("xpText").textContent = `${m.xp} XP · ${hi - m.xp} XP 더 모으면 ${TIERS[lv].item}!`;
+    $("xpText").textContent = `${m.xp} XP · ${hi - m.xp} XP 더 모으면 ${TIERS[lv].item} 획득!`;
   } else {
     $("xpFill").style.width = "100%";
-    $("xpText").textContent = `${m.xp} XP · 최고 레벨 달성! 👑`;
+    $("xpText").textContent = `${m.xp} XP · 최고 레벨 달성!`;
   }
-  $("syncText").textContent = local.pending.length ?"📴 인터넷 연결되면 기록을 올릴게요" : online === false ? "📴 서버에 연결하지 못했어요" : "☁️ 어느 폰에서든 이어서 할 수 있어요";
+  $("syncText").innerHTML = local.pending.length ? ic("cloudOff") + "인터넷 연결되면 기록을 올릴게요" : online === false ? ic("cloudOff") + "서버에 연결하지 못했어요" : ic("cloud") + "어느 폰에서든 이어서 할 수 있어요";
   $("bestScore").textContent = m.best;
   $("bestCombo").textContent = m.bestCombo;
   $("plays").textContent = m.plays;
   $("wrongCount").textContent = m.wrong.length;
   $("retryHomeBtn").disabled = !m.wrong.length;
-  $("soundBtn").textContent = local.sound ? "🔊 소리" : "🔇 소리";
+  $("soundBtn").innerHTML = ic(local.sound ? "volume" : "mute") + "소리";
 }
 function renderFriends() {
   const box = $("friendList");
-  if (friends === null) { box.innerHTML = '<div class="fempty">📴 친구 목록을 불러오지 못했어요</div>'; return; }
+  if (friends === null) { box.innerHTML = '<div class="fempty">' + ic("cloudOff") + '친구 목록을 불러오지 못했어요</div>'; return; }
   const list = friends.map(f => f.name.toLowerCase() === local.name.toLowerCase() ? { ...f, xp: Math.max(f.xp, local.me.xp) } : f);
   if (!list.some(f => f.name.toLowerCase() === local.name.toLowerCase())) list.push({ name: local.me.name, xp: local.me.xp });
   list.sort((a, b) => b.xp - a.xp);
   box.innerHTML = list.map((f, i) => {
     const lv = levelOf(f.xp), mine = f.name.toLowerCase() === local.name.toLowerCase();
-    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div><div class="mini">${david(lv)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
+    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${david(lv)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
   }).join("");
 }
 async function loadFriends() {
@@ -502,7 +559,7 @@ async function loadFriends() {
 }
 async function renderHome() {
   show("home"); renderMe();
-  $("friendList").innerHTML = '<div class="fempty">⏳ 친구들을 불러오는 중...</div>';
+  $("friendList").innerHTML = '<div class="fempty">' + ic("loader", "spin") + '친구들을 불러오는 중...</div>';
   await flush();
   await loadFriends();
   renderMe(); renderFriends();
@@ -536,7 +593,7 @@ function startGame(retry) {
   updateScoreTag();
   show("game"); renderCard();
 }
-const updateScoreTag = () => $("modeTag").textContent = (retryMode ? "🔁 다시 풀기 · " : "⭐ ") + score + " XP";
+const updateScoreTag = () => $("modeTag").innerHTML = ic(retryMode ? "retry" : "star", retryMode ? "" : "f") + (retryMode ? "다시 풀기 · " : "") + score + " XP";
 
 function renderCard() {
   const b = deck[idx];
@@ -549,7 +606,7 @@ function renderCard() {
   $("hintBox").innerHTML = "";
   $("sameFront").classList.toggle("hidden", !twins(b).length);
   $("hintBtn").disabled = false;
-  $("hintBtn").textContent = "💡 힌트 (" + b.hints.length + ")";
+  $("hintBtn").innerHTML = ic("bulb") + "힌트 " + b.hints.length;
   $("frontControls").classList.remove("hidden");
   $("judgeControls").classList.add("hidden");
   $("answer").textContent = ""; $("order").textContent = "";
@@ -559,11 +616,11 @@ function showHint() {
   const b = deck[idx];
   if (hintsUsed >= b.hints.length) return;
   const d = document.createElement("div");
-  d.className = "hint"; d.textContent = "💡 " + b.hints[hintsUsed];
+  d.className = "hint"; d.innerHTML = ic("bulb") + "<span>" + esc(b.hints[hintsUsed]) + "</span>";
   $("hintBox").appendChild(d);
   hintsUsed++; sfx.hint();
   const left = b.hints.length - hintsUsed;
-  $("hintBtn").textContent = left ? "💡 힌트 (" + left + ")" : "💡 힌트 끝";
+  $("hintBtn").innerHTML = ic("bulb") + (left ? "힌트 " + left : "힌트 끝");
   $("hintBtn").disabled = !left;
 }
 function flipCard() {
@@ -593,11 +650,11 @@ function judge(ok) {
   } else {
     combo = 0;
     if (!roundWrong.includes(b.name)) roundWrong.push(b.name);
-    floater("다시 기억해! 💪", true); sfx.no();
+    floater("다시 기억해!", true); sfx.no();
   }
   updateScoreTag();
   const c = $("combo");
-  c.textContent = combo >= 2 ? "🔥 " + combo + " 콤보!" : "";
+  c.innerHTML = combo >= 2 ? ic("flame") + combo + " 콤보!" : "";
   c.classList.remove("pop"); void c.offsetWidth; if (combo >= 2) c.classList.add("pop");
   setTimeout(() => { idx++; idx < deck.length ? renderCard() : finish(); }, 380);
 }
@@ -621,14 +678,14 @@ function finish() {
 
   const afterLv = levelOf(m.xp);
   [...$("stars").children].forEach((s, i) => { s.className = i < stars ? "lit" : ""; s.style.animationDelay = (i * .2) + "s"; });
-  $("endTitle").textContent = stars === 3 ? "완벽해요! 🏆" : stars === 2 ? "아주 잘했어요! 🎉" : stars === 1 ? "좋아요, 조금만 더! 👍" : "다시 해 보자! 💪";
+  $("endTitle").textContent = stars === 3 ? "완벽해요!" : stars === 2 ? "아주 잘했어요!" : stars === 1 ? "좋아요, 조금만 더!" : "다시 해 보자!";
   $("endSub").textContent = retryMode ? "틀린 카드 다시 풀기 완료" : "22권 카드 도전 완료";
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
     $("luAvatar").innerHTML = david(afterLv);
-    $("luTitle").textContent = "레벨 업! Lv." + afterLv;
-    $("luItem").textContent = "새 장비 획득! " + TIERS[afterLv - 1].item;
+    $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
+    $("luItem").textContent = "새 장비 획득: " + TIERS[afterLv - 1].item;
   }
   $("rScore").textContent = "+" + score;
   $("rRight").textContent = right + "/" + total;
@@ -637,7 +694,7 @@ function finish() {
   $("wrongBox").classList.toggle("hidden", !wl.length);
   $("wrongList").innerHTML = wl.map(b => "<span><small>" + b.cho + "</small>" + b.name + "</span>").join("");
   $("retryEndBtn").classList.toggle("hidden", !m.wrong.length);
-  $("retryEndBtn").textContent = "🔁 틀린 카드 다시 풀기 (" + m.wrong.length + ")";
+  $("retryEndBtn").innerHTML = ic("retry") + "틀린 카드 다시 풀기 (" + m.wrong.length + ")";
   persist();
   show("end");
   if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
