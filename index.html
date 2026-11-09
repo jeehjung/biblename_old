@@ -550,7 +550,10 @@ async function loadFriends() {
 async function renderHome() {
   show("home"); renderMe();
   $("friendList").innerHTML = '<div class="fempty">' + ic("loader", "spin") + '친구들을 불러오는 중...</div>';
-  await flush();
+  // 다른 폰에서 쌓은 기록도 반영되도록, 보낼 게 없으면 내 기록을 서버에서 다시 받아온다
+  if (await flush() && !local.pending.length && local.name) {
+    try { const r = await api("/player?name=" + encodeURIComponent(local.name)); if (r.exists) { local.me = r.player; persist(); } } catch (e) {}
+  }
   await loadFriends();
   renderMe(); renderFriends();
 }
