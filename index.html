@@ -513,7 +513,7 @@ async function chooseName(raw) {
 function renderMe() {
   const m = local.me, lv = levelOf(m.xp), t = TIERS[lv - 1];
   $("myAvatar").innerHTML = david(lv);
-  $("myName").textContent = m.name + "의 다윗";
+  $("myName").textContent = m.name;
   $("myLv").textContent = "Lv." + lv;
   $("myTitle").textContent = t.title;
   if (lv < NEED.length) {
