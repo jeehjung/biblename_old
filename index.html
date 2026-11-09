@@ -524,7 +524,7 @@ function renderMe() {
     $("xpFill").style.width = "100%";
     $("xpText").textContent = `${m.xp} XP · 최고 레벨 달성!`;
   }
-  $("syncText").innerHTML = local.pending.length ? ic("cloudOff") + "인터넷 연결되면 기록을 올릴게요" : online === false ? ic("cloudOff") + "서버에 연결하지 못했어요" : ic("cloud") + "어느 폰에서든 이어서 할 수 있어요";
+  $("syncText").innerHTML = local.pending.length ? ic("cloudOff") + "인터넷 연결되면 기록을 올릴게요" : online === false ? ic("cloudOff") + "서버에 연결하지 못했어요" : "";
   $("bestScore").textContent = m.best;
   $("bestCombo").textContent = m.bestCombo;
   $("plays").textContent = m.plays;
