@@ -13,7 +13,7 @@
   --red:#ff6b6b;--red-d:#d84646;--blue:#4cc3ff;--blue-d:#1f93cf;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%}
+html,body{margin:0}
 body{
   font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
   color:var(--ink);
@@ -23,58 +23,87 @@ body{
   background-attachment:fixed;
   min-height:100vh;overflow-x:hidden;
 }
-button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
-.app{max-width:480px;margin:0 auto;padding:16px 16px 40px;min-height:100vh;display:flex;flex-direction:column}
+button,input{font:inherit}
+button{cursor:pointer;border:0;touch-action:manipulation}
+.app{max-width:480px;margin:0 auto;padding:16px 16px 40px;min-height:100vh}
 .hidden{display:none!important}
 
-/* 공통 버튼 */
 .btn{display:block;width:100%;border-radius:20px;padding:17px 14px;font-weight:900;font-size:20px;transition:transform .08s}
 .btn:active{transform:translateY(4px)}
 .btn-gold{background:var(--gold);color:#5a3d00;box-shadow:0 6px 0 var(--gold-d)}
 .btn-gold:active{box-shadow:0 2px 0 var(--gold-d)}
 .btn-blue{background:var(--blue);color:#fff;box-shadow:0 6px 0 var(--blue-d)}
 .btn-blue:active{box-shadow:0 2px 0 var(--blue-d)}
-.btn-ghost{background:#ffffff26;color:#fff;font-size:16px;padding:13px;box-shadow:none}
+.btn-plain{background:#ece6ff;color:var(--ink);box-shadow:0 5px 0 #cfc4f5}
 .btn:disabled{opacity:.45;transform:none}
 .pill{background:#ffffff2b;color:#fff;border-radius:999px;padding:8px 13px;font-weight:800;font-size:15px}
+.panel{background:var(--card);border-radius:24px;padding:16px;box-shadow:0 8px 0 #0002}
 
 /* 홈 */
 .top{display:flex;justify-content:space-between;align-items:center}
-.hero{text-align:center;color:#fff;padding:22px 0 14px}
-.hero .logo{font-size:56px;line-height:1;filter:drop-shadow(0 4px 0 #0003);animation:bob 2.4s ease-in-out infinite}
+.hero{text-align:center;color:#fff;padding:14px 0 12px}
+.hero .logo{font-size:50px;line-height:1;filter:drop-shadow(0 4px 0 #0003);animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-8px)}}
-.hero h1{font-size:34px;margin:10px 0 4px;letter-spacing:-1px;text-shadow:0 3px 0 #0003}
-.hero .church{display:inline-block;margin-top:12px;background:#ffffff2b;border-radius:99px;padding:5px 14px;font-weight:900;font-size:16px}
+.hero .church{display:inline-block;margin-top:10px;background:#ffffff2b;border-radius:99px;padding:5px 14px;font-weight:900;font-size:16px}
+.hero h1{font-size:32px;margin:8px 0 2px;letter-spacing:-1px;text-shadow:0 3px 0 #0003}
 .hero p{margin:0;font-weight:700;opacity:.85}
-.levelbox{background:var(--card);border-radius:24px;padding:16px;box-shadow:0 8px 0 #0002;margin-bottom:16px}
-.lvrow{display:flex;align-items:center;gap:12px}
-.lvbadge{width:58px;height:58px;border-radius:18px;background:linear-gradient(var(--gold),#ffb300);display:grid;place-items:center;font-weight:1000;color:#5a3d00;box-shadow:0 4px 0 var(--gold-d);flex:none;text-align:center;line-height:1.05}
-.lvbadge small{display:block;font-size:11px}
-.lvbadge b{font-size:22px}
-.lvinfo{flex:1}
-.lvname{font-weight:900;font-size:17px}
-.xpbar{height:14px;background:#ece6ff;border-radius:99px;overflow:hidden;margin-top:7px}
+
+.me{display:flex;gap:12px;align-items:center}
+.me .avatar{flex:none;width:118px;height:138px;background:radial-gradient(circle at 50% 60%,#efe9ff,#ffffff00 70%);border-radius:20px}
+.me .info{flex:1;min-width:0}
+.mename{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.mename b{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.swap{background:#ece6ff;color:var(--muted);font-weight:800;font-size:12px;border-radius:99px;padding:5px 9px;flex:none}
+.lvline{margin-top:6px;font-weight:900;font-size:15px;color:var(--sky2)}
+.lvline span{display:inline-block;background:var(--gold);color:#5a3d00;border-radius:8px;padding:1px 7px;margin-right:5px;box-shadow:0 2px 0 var(--gold-d)}
+.xpbar{height:13px;background:#ece6ff;border-radius:99px;overflow:hidden;margin-top:8px}
 .xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#7ef0c4);border-radius:99px;transition:width .6s}
-.xptext{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}
-.chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.xptext{font-size:12px;color:var(--muted);font-weight:700;margin-top:5px;line-height:1.35}
+.sync{font-size:11px;font-weight:800;color:var(--muted);margin-top:4px}
+.chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
 .chip{background:#f3efff;border-radius:14px;padding:9px 4px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
 .chip b{display:block;font-size:20px;color:var(--ink)}
-.howto{display:flex;justify-content:space-between;gap:6px;color:#fff;font-weight:800;font-size:13px;text-align:center;margin:4px 0 16px}
+.howto{display:flex;gap:6px;color:#fff;font-weight:800;font-size:13px;text-align:center;margin:16px 0}
 .howto div{flex:1;background:#ffffff1f;border-radius:14px;padding:10px 4px}
 .howto span{display:block;font-size:24px;margin-bottom:3px}
 .stack{display:grid;gap:14px}
 .badge{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:1px 9px;font-size:15px;margin-left:6px;vertical-align:2px}
 
+.friends{margin-top:22px}
+.friends h2{color:#fff;font-size:20px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+.friends h2 button{font-size:13px}
+.flist{display:grid;gap:8px}
+.frow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:18px;padding:6px 12px 6px 6px;box-shadow:0 4px 0 #0002}
+.frow.mine{outline:3px solid var(--gold)}
+.frow .rank{width:22px;text-align:center;font-weight:1000;color:var(--muted);flex:none}
+.frow .mini{width:52px;height:60px;flex:none}
+.frow .who{flex:1;min-width:0}
+.frow .who b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .who small{color:var(--sky2);font-weight:800}
+.frow .xp{font-weight:900;color:var(--muted);font-size:13px;text-align:right;flex:none}
+.frow .xp b{display:block;color:var(--ink);font-size:16px}
+.fempty{color:#fff;opacity:.85;text-align:center;font-weight:700;padding:14px;background:#ffffff1a;border-radius:16px}
+
+/* 이름 */
+.namebox{margin-top:6px}
+.namebox label{display:block;font-weight:900;font-size:18px;margin-bottom:10px}
+.namebox input{width:100%;font-size:24px;font-weight:900;padding:14px 16px;border-radius:16px;border:3px solid #dcd2ff;background:#fff;color:var(--ink);outline:none;text-align:center}
+.namebox input:focus{border-color:var(--sky2)}
+.namebox .note{font-size:13px;color:var(--muted);font-weight:700;margin:10px 0 14px;text-align:center;line-height:1.5}
+.err{color:var(--red-d);font-weight:800;font-size:14px;text-align:center;min-height:20px;margin-top:8px}
+.pick{margin-top:18px}
+.pick h3{color:#fff;margin:0 0 8px;font-size:16px}
+.pickwrap{display:flex;flex-wrap:wrap;gap:8px}
+.pickwrap button{background:#ffffff2b;color:#fff;font-weight:800;border-radius:99px;padding:8px 14px}
+
 /* 게임 */
 .gamehead{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.scorebox{display:flex;gap:6px}
 .progress{height:12px;background:#ffffff2b;border-radius:99px;overflow:hidden;margin:12px 0 6px}
 .progress i{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .3s}
 .counter{color:#fff;text-align:center;font-weight:800;font-size:14px;opacity:.9}
 .combo{height:30px;text-align:center;color:var(--gold);font-weight:1000;font-size:22px;text-shadow:0 2px 0 #0004}
-.combo.pop{animation:pop .35s}
+.pop{animation:pop .35s}
 @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
-
 .scene{perspective:1100px;margin:6px 0 16px}
 .flip{position:relative;width:100%;height:410px;transition:transform .55s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
 .flip.on{transform:rotateY(180deg)}
@@ -86,44 +115,43 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
 .same{margin-top:10px;font-size:13px;font-weight:800;color:#c2410c;background:#ffedd5;border-radius:12px;padding:6px 10px}
 .hintbox{margin-top:12px;width:100%;display:grid;gap:7px}
 .hint{background:#e9fbf3;color:#11684a;border-radius:14px;padding:10px 12px;font-weight:800;font-size:16px;animation:pop .3s}
-.answer{font-size:clamp(42px,13vw,58px);font-weight:1000;color:var(--ink);margin:14px 0 6px;letter-spacing:2px}
+.answer{font-size:clamp(42px,13vw,58px);font-weight:1000;margin:14px 0 6px;letter-spacing:2px}
 .order{font-weight:800;color:var(--muted)}
 .check{font-weight:900;font-size:17px;margin-top:16px}
-
 .controls{display:grid;grid-template-columns:1fr 1.4fr;gap:12px}
 .judge{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .btn-ok{background:var(--mint);color:#fff;box-shadow:0 6px 0 var(--mint-d);font-size:22px}
 .btn-ok:active{box-shadow:0 2px 0 var(--mint-d)}
 .btn-no{background:var(--red);color:#fff;box-shadow:0 6px 0 var(--red-d);font-size:22px}
 .btn-no:active{box-shadow:0 2px 0 var(--red-d)}
-
-.floater{position:fixed;left:50%;top:42%;transform:translate(-50%,0);font-size:38px;font-weight:1000;color:var(--gold);text-shadow:0 3px 0 #0005;pointer-events:none;animation:float 0.9s ease-out forwards;z-index:9}
-.floater.miss{color:#fff}
+.floater{position:fixed;left:50%;top:42%;transform:translate(-50%,0);font-size:38px;font-weight:1000;color:var(--gold);text-shadow:0 3px 0 #0005;pointer-events:none;animation:float .9s ease-out forwards;z-index:9;white-space:nowrap}
+.floater.miss{color:#fff;font-size:30px}
 @keyframes float{from{opacity:1;transform:translate(-50%,0) scale(.8)}to{opacity:0;transform:translate(-50%,-90px) scale(1.2)}}
 
 /* 결과 */
-.result{background:var(--card);border-radius:28px;padding:22px 18px;text-align:center;box-shadow:0 10px 0 #0003}
-.stars{font-size:52px;letter-spacing:4px;margin:4px 0}
+.result{text-align:center;margin-top:16px}
+.stars{font-size:46px;letter-spacing:4px;margin:2px 0}
 .stars span{display:inline-block;opacity:.18;filter:grayscale(1)}
 .stars span.lit{opacity:1;filter:none;animation:pop .5s backwards}
-.result h2{margin:6px 0 2px;font-size:28px}
+.result h2{margin:4px 0 2px;font-size:27px}
 .newrec{display:inline-block;background:var(--red);color:#fff;font-weight:900;border-radius:99px;padding:4px 12px;font-size:13px;margin-top:6px;animation:pop .5s}
-.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0}
+.levelup{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fff6c9,#ffe083);border-radius:20px;padding:8px 12px;margin:12px 0 0;text-align:left;animation:pop .6s}
+.levelup .avatar{width:80px;height:94px;flex:none}
+.levelup b{display:block;font-size:20px;color:#8a5a00}
+.levelup span{font-weight:800}
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
 .wrongs{text-align:left;background:#fff1f1;border-radius:18px;padding:12px;margin-bottom:6px}
 .wrongs b{display:block;margin-bottom:8px;color:var(--red-d)}
 .wlist{display:flex;flex-wrap:wrap;gap:6px}
 .wlist span{background:#fff;border-radius:10px;padding:6px 9px;font-weight:800;font-size:14px;box-shadow:0 2px 0 #0001}
 .wlist small{color:var(--muted);margin-right:4px}
 
-/* 모달 */
 .modal{position:fixed;inset:0;background:#0007;display:grid;place-items:center;padding:20px;z-index:20}
 .modal .box{background:var(--card);border-radius:24px;padding:22px;max-width:340px;width:100%;text-align:center}
 .modal h3{margin:0 0 6px;font-size:22px}
 .modal p{margin:0 0 16px;color:var(--muted);font-weight:700}
 .modal .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal .btn{font-size:17px}
-.btn-plain{background:#ece6ff;color:var(--ink);box-shadow:0 5px 0 #cfc4f5}
-
 .confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:30;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -132,8 +160,30 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
 <body>
 <main class="app">
 
+<!-- 이름 입력 -->
+<section id="nameScreen" class="hidden">
+  <div class="top"><span class="pill">📖 창세기 ~ 아가 22권</span></div>
+  <header class="hero">
+    <div class="logo">⛪</div>
+    <div class="church">속초교회 아동부</div>
+    <h1>초성 성경 퀴즈</h1>
+  </header>
+  <div class="panel namebox">
+    <label for="nameInput">내 이름을 써 주세요 ✏️</label>
+    <input id="nameInput" maxlength="10" autocomplete="off" placeholder="예: 김하늘">
+    <div class="err" id="nameErr"></div>
+    <div class="note">같은 이름을 쓰면 어느 휴대폰에서 해도<br>내 다윗의 레벨이 그대로 이어져요!</div>
+    <button class="btn btn-gold" id="nameOk">🛡️ 내 다윗 만나러 가기</button>
+    <button class="btn btn-plain hidden" id="nameCancel" style="margin-top:12px;font-size:16px">취소</button>
+  </div>
+  <div class="pick hidden" id="pickBox">
+    <h3>이미 시작한 친구라면 이름을 눌러요</h3>
+    <div class="pickwrap" id="pickList"></div>
+  </div>
+</section>
+
 <!-- 홈 -->
-<section id="home">
+<section id="home" class="hidden">
   <div class="top">
     <span class="pill">📖 창세기 ~ 아가 22권</span>
     <button class="pill" id="soundBtn">🔊 소리</button>
@@ -145,13 +195,15 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
     <p>초성만 보고 성경 이름을 맞혀 봐!</p>
   </header>
 
-  <div class="levelbox">
-    <div class="lvrow">
-      <div class="lvbadge"><div><small>LEVEL</small><b id="lvNum">1</b></div></div>
-      <div class="lvinfo">
-        <div class="lvname" id="lvName">새싹 탐험가 🌱</div>
+  <div class="panel">
+    <div class="me">
+      <div class="avatar" id="myAvatar"></div>
+      <div class="info">
+        <div class="mename"><b id="myName"></b><button class="swap" id="swapBtn">이름 바꾸기</button></div>
+        <div class="lvline"><span id="myLv">Lv.1</span><em id="myTitle" style="font-style:normal"></em></div>
         <div class="xpbar"><i id="xpFill"></i></div>
-        <div class="xptext" id="xpText">0 / 100 XP</div>
+        <div class="xptext" id="xpText"></div>
+        <div class="sync" id="syncText"></div>
       </div>
     </div>
     <div class="chips">
@@ -171,27 +223,29 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
     <button class="btn btn-gold" id="startBtn">🚀 22권 카드 도전!</button>
     <button class="btn btn-blue" id="retryHomeBtn">🔁 틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
   </div>
+
+  <div class="friends">
+    <h2>🛡️ 우리 아동부 다윗들 <button class="pill" id="refreshBtn">↻ 새로고침</button></h2>
+    <div class="flist" id="friendList"></div>
+  </div>
 </section>
 
 <!-- 게임 -->
 <section id="game" class="hidden">
   <div class="gamehead">
     <button class="pill" id="quitBtn">✕ 그만</button>
-    <div class="scorebox">
-      <span class="pill" id="modeTag">⭐ <b id="score">0</b>점</span>
-    </div>
+    <span class="pill" id="modeTag"></span>
   </div>
   <div class="progress"><i id="bar"></i></div>
   <div class="counter" id="counter">1 / 22</div>
   <div class="combo" id="combo"></div>
-
   <div class="scene">
     <div class="flip" id="card">
       <div class="face front">
         <span class="tag" id="cardTag">초성 카드</span>
         <div class="initials" id="initials"></div>
         <div class="write">✏️ 종이에 써 보고 카드를 뒤집어!</div>
-        <div class="same hidden" id="sameFront"></div>
+        <div class="same hidden" id="sameFront">👀 이 초성은 성경이 2권 있어요! 힌트로 구별해 봐</div>
         <div class="hintbox" id="hintBox"></div>
       </div>
       <div class="face back">
@@ -203,7 +257,6 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
       </div>
     </div>
   </div>
-
   <div class="controls" id="frontControls">
     <button class="btn btn-blue" id="hintBtn">💡 힌트</button>
     <button class="btn btn-gold" id="flipBtn">🔄 뒤집기</button>
@@ -216,16 +269,17 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
 
 <!-- 결과 -->
 <section id="end" class="hidden">
-  <header class="hero" style="padding-top:28px">
-    <div class="logo" id="endEmoji">🏆</div>
-  </header>
-  <div class="result">
+  <div class="panel result">
     <div class="stars" id="stars"><span>⭐</span><span>⭐</span><span>⭐</span></div>
     <h2 id="endTitle">도전 완료!</h2>
     <div id="endSub" style="font-weight:700;color:var(--muted)"></div>
     <div id="newRec" class="newrec hidden">🎉 최고 기록!</div>
+    <div class="levelup hidden" id="levelUp">
+      <div class="avatar" id="luAvatar"></div>
+      <div><b id="luTitle">레벨 업!</b><span id="luItem"></span></div>
+    </div>
     <div class="rgrid">
-      <div class="chip">점수<b id="rScore">0</b></div>
+      <div class="chip">얻은 XP<b id="rScore">0</b></div>
       <div class="chip">맞힌 카드<b id="rRight">0</b></div>
       <div class="chip">최고 콤보<b id="rCombo">0</b></div>
     </div>
@@ -240,13 +294,12 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
     </div>
   </div>
 </section>
-
 </main>
 
 <div class="modal hidden" id="quitModal">
   <div class="box">
     <h3>그만할까요?</h3>
-    <p>지금까지 푼 기록은 사라져요.</p>
+    <p>이번 판 기록은 저장되지 않아요.</p>
     <div class="row">
       <button class="btn btn-plain" id="stayBtn">계속하기</button>
       <button class="btn btn-no" id="leaveBtn" style="font-size:17px">그만하기</button>
@@ -255,7 +308,9 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
 </div>
 
 <script>
-/* ---------- 데이터: 창세기 ~ 아가 22권 ---------- */
+const API = "https://bible-quiz-api.jeeh.workers.dev";
+
+/* ---------- 성경 22권 ---------- */
 const BOOKS = [
   ["창세기",  ["하나님이 엿새 동안 세상을 만드셨어요", "노아의 방주와 무지개 약속"]],
   ["출애굽기",["모세가 지팡이를 들자 바다가 갈라졌어요", "이집트를 탈출하고 십계명을 받았어요"]],
@@ -280,33 +335,183 @@ const BOOKS = [
   ["전도서",  ["\"헛되고 헛되다\" 해 아래 새것이 없어요", "모든 일에는 때가 있어요"]],
   ["아가",    ["솔로몬이 지은 아름다운 사랑의 노래", "노래 중의 노래, 구약 22권의 마지막 책"]]
 ];
-
 const CHO = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-const chosung = s => [...s].map(ch => {
-  const c = ch.charCodeAt(0) - 0xAC00;
-  return c >= 0 && c < 11172 ? CHO[Math.floor(c / 588)] : ch;
-}).join("");
+const chosung = s => [...s].map(ch => { const c = ch.charCodeAt(0) - 0xAC00; return c >= 0 && c < 11172 ? CHO[Math.floor(c / 588)] : ch; }).join("");
 const books = BOOKS.map(([name, hints], i) => ({ name, hints, no: i + 1, cho: chosung(name) }));
 const twins = b => books.filter(x => x.cho === b.cho && x.name !== b.name);
 
-const LEVELS = ["새싹 탐험가 🌱","꼬마 순례자 🎒","초성 사냥꾼 🔍","말씀 기사 🛡️","성경 박사 🎓","초성 마스터 👑"];
+/* ---------- 다윗 레벨과 장비 ---------- */
+const NEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
+const TIERS = [
+  { title: "목동 다윗",     item: "🪨 물맷돌과 지팡이", staff: 1 },
+  { title: "나무 칼 다윗",   item: "🗡️ 나무 칼", sword: "wood" },
+  { title: "나무 방패 다윗", item: "🛡️ 나무 방패", sword: "wood", shield: "wood" },
+  { title: "가죽 갑옷 다윗", item: "🦺 가죽 갑옷", sword: "wood", shield: "wood", armor: "leather" },
+  { title: "철 칼 다윗",     item: "⚔️ 철 칼과 철 방패", sword: "iron", shield: "iron", armor: "leather" },
+  { title: "철 갑옷 다윗",   item: "🪖 철 갑옷과 투구", sword: "iron", shield: "iron", armor: "iron", helm: "iron" },
+  { title: "은빛 기사 다윗", item: "✨ 은빛 장비 세트", sword: "silver", shield: "silver", armor: "silver", helm: "silver" },
+  { title: "황금 용사 다윗", item: "🌟 황금 장비 세트", sword: "gold", shield: "gold", armor: "gold", helm: "gold" },
+  { title: "망토 장군 다윗", item: "🧣 붉은 망토", sword: "gold", shield: "gold", armor: "gold", helm: "gold", cape: 1 },
+  { title: "왕 다윗",       item: "👑 왕관", sword: "gold", shield: "gold", armor: "gold", crown: 1, cape: 1, glow: 1 }
+];
+const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
+const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
 
-/* ---------- 저장 ---------- */
-const KEY = "chosung-bible-v2";
-let save = { xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [], sound: true };
-try { Object.assign(save, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
-const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} };
+function david(level) {
+  const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
+  if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
+  if (t.cape) O.push('<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="#d94a4a" stroke="#9e2c2c" stroke-width="2"/>');
+  if (t.staff) O.push('<path d="M88 40 L84 128" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M88 41 Q86 26 97 28 Q105 30 102 40" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>');
+  O.push(`<rect x="50" y="100" width="8" height="22" rx="3" fill="${SK}"/><rect x="62" y="100" width="8" height="22" rx="3" fill="${SK}"/>`);
+  O.push('<rect x="47" y="119" width="13" height="6" rx="3" fill="#7a4a24"/><rect x="60" y="119" width="13" height="6" rx="3" fill="#7a4a24"/>');
+  O.push('<path d="M45 62 Q60 58 75 62 L80 104 Q60 109 40 104 Z" fill="#4f8fe0"/>');
+  if (t.armor) {
+    const [a, b] = MAT[t.armor];
+    O.push(`<path d="M46 63 Q60 59 74 63 L76 92 Q60 96 44 92 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
+    if (t.armor !== "leather") O.push(`<path d="M60 63 V94 M49 76 Q60 80 71 76" fill="none" stroke="${b}" stroke-width="2"/>`);
+    O.push('<rect x="42" y="89" width="36" height="6" rx="2" fill="#6e4322"/><rect x="57" y="88" width="6" height="8" rx="1" fill="#ffd54a"/>');
+  } else O.push('<rect x="42" y="88" width="36" height="4" rx="2" fill="#c8a165"/>');
+  O.push(`<path d="M46 66 L34 86 M74 66 L86 84" stroke="${SK}" stroke-width="8" stroke-linecap="round"/>`);
+  if (t.armor) { const [a, b] = MAT[t.armor]; O.push(`<circle cx="46" cy="66" r="7" fill="${a}" stroke="${b}" stroke-width="2"/><circle cx="74" cy="66" r="7" fill="${a}" stroke="${b}" stroke-width="2"/>`); }
+  if (t.sword) {
+    const [a, b] = MAT[t.sword];
+    O.push(`<path d="M31 84 L31 40 L34 33 L37 40 L37 84 Z" fill="${a}" stroke="${b}" stroke-width="2"/><rect x="25" y="81" width="18" height="5" rx="2" fill="${b}"/><rect x="32" y="86" width="4" height="9" fill="#5a3a1e"/>`);
+  }
+  if (t.staff) O.push('<path d="M34 88 Q24 100 30 111" fill="none" stroke="#c8a165" stroke-width="2"/><circle cx="30" cy="113" r="4.5" fill="#9e9e9e" stroke="#6f6f6f"/>');
+  O.push(`<circle cx="34" cy="88" r="5" fill="${SK}"/><circle cx="86" cy="86" r="5" fill="${SK}"/>`);
+  if (t.shield) {
+    const [a, b] = MAT[t.shield];
+    O.push(`<path d="M73 71 H99 V88 Q99 103 86 109 Q73 103 73 88 Z" fill="${a}" stroke="${b}" stroke-width="2.5"/><path d="M86 77 V101 M78 86 H94" stroke="${t.shield === "gold" ? "#d94a4a" : b}" stroke-width="3.5" stroke-linecap="round"/>`);
+  }
+  O.push(`<rect x="55" y="56" width="10" height="8" fill="${SK}"/><circle cx="60" cy="42" r="19" fill="${SK}"/>`);
+  O.push('<path d="M41 43 Q39 21 60 20 Q81 21 79 43 Q75 31 60 31 Q45 31 41 43 Z" fill="#6b3f1f"/><circle cx="43" cy="36" r="4" fill="#6b3f1f"/><circle cx="77" cy="36" r="4" fill="#6b3f1f"/>');
+  O.push('<circle cx="53" cy="44" r="2.5" fill="#2b2350"/><circle cx="67" cy="44" r="2.5" fill="#2b2350"/><circle cx="49" cy="50" r="3" fill="#ff9fae" opacity=".7"/><circle cx="71" cy="50" r="3" fill="#ff9fae" opacity=".7"/><path d="M54 51 Q60 56 66 51" fill="none" stroke="#2b2350" stroke-width="2" stroke-linecap="round"/>');
+  if (t.helm) {
+    const [a, b] = MAT[t.helm];
+    O.push(`<path d="M39 42 Q39 17 60 17 Q81 17 81 42 L77 42 Q76 28 60 28 Q44 28 43 42 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
+    if (t.helm !== "iron") O.push('<path d="M60 18 Q65 5 77 7 Q69 11 65 19 Z" fill="#e53935"/>');
+  }
+  if (t.crown) O.push('<path d="M44 27 L47 13 L54 21 L60 8 L66 21 L73 13 L76 27 Z" fill="#ffd54a" stroke="#c58a00" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="21" r="2.5" fill="#e53935"/><circle cx="50" cy="23" r="2" fill="#4cc3ff"/><circle cx="70" cy="23" r="2" fill="#4cc3ff"/>');
+  return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
+}
 
-/* ---------- 상태 ---------- */
-let deck = [], idx = 0, score = 0, combo = 0, maxCombo = 0, right = 0, hintsUsed = 0, retryMode = false, roundWrong = [];
+/* ---------- 저장 & 동기화 ---------- */
+const LKEY = "chosung-bible-v3";
+let local = { name: "", me: null, pending: null, sound: true };
+try { Object.assign(local, JSON.parse(localStorage.getItem(LKEY) || "{}")); } catch (e) {}
+const persist = () => { try { localStorage.setItem(LKEY, JSON.stringify(local)); } catch (e) {} };
+const cleanName = n => String(n || "").normalize("NFC").replace(/\s+/g, " ").trim();
+const validName = n => /^[가-힣a-zA-Z0-9 ]{1,10}$/.test(n);
+const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [] });
+let online = null, friends = null;
+
+async function api(path, body) {
+  const r = await fetch(API + path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+if (!Array.isArray(local.pending)) local.pending = [];
+const sameName = (a, b) => cleanName(a).toLowerCase() === cleanName(b).toLowerCase();
+// 판마다 기록을 대기열에 넣고, 하나씩 서버로 보낸다 (오프라인이면 다음에 다시)
+let flushing = null;
+function flush() {
+  if (!flushing) flushing = (async () => {
+    while (local.pending.length) {
+      const p = local.pending[0];
+      try {
+        const r = await api("/player", p);
+        local.pending.shift();
+        if (sameName(p.name, local.name) && !local.pending.some(x => sameName(x.name, local.name))) local.me = r.player;
+        persist(); online = true;
+      } catch (e) { online = false; return false; }
+    }
+    return true;
+  })().finally(() => { flushing = null; });
+  return flushing;
+}
+function queue(delta) { local.pending.push({ name: local.name, ...delta }); persist(); }
+
+/* ---------- 화면 ---------- */
 const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const show = id => ["home","game","end"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+const show = id => { ["nameScreen", "home", "game", "end"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
+
+/* 이름 */
+async function openName(canCancel) {
+  $("nameErr").textContent = "";
+  $("nameInput").value = canCancel ? "" : local.name;
+  $("nameCancel").classList.toggle("hidden", !canCancel);
+  show("nameScreen");
+  await loadFriends();
+  const names = (friends || []).map(f => f.name);
+  $("pickBox").classList.toggle("hidden", !names.length);
+  $("pickList").innerHTML = names.map(n => `<button data-n="${esc(n)}">${esc(n)}</button>`).join("");
+}
+async function chooseName(raw) {
+  const n = cleanName(raw);
+  if (!validName(n)) { $("nameErr").textContent = "한글·영문·숫자로 1~10글자를 써 주세요"; return; }
+  $("nameOk").disabled = true; $("nameOk").textContent = "⏳ 불러오는 중...";
+  await flush();
+  local.name = n;
+  local.me = blank(n);
+  try { const r = await api("/player?name=" + encodeURIComponent(n)); local.me = r.player; online = true; }
+  catch (e) { online = false; }
+  persist();
+  $("nameOk").disabled = false; $("nameOk").textContent = "🛡️ 내 다윗 만나러 가기";
+  renderHome();
+}
+
+/* 홈 */
+function renderMe() {
+  const m = local.me, lv = levelOf(m.xp), t = TIERS[lv - 1];
+  $("myAvatar").innerHTML = david(lv);
+  $("myName").textContent = m.name + "의 다윗";
+  $("myLv").textContent = "Lv." + lv;
+  $("myTitle").textContent = t.title;
+  if (lv < NEED.length) {
+    const lo = NEED[lv - 1], hi = NEED[lv];
+    $("xpFill").style.width = ((m.xp - lo) / (hi - lo) * 100) + "%";
+    $("xpText").textContent = `${m.xp} XP · ${hi - m.xp} XP 더 모으면 ${TIERS[lv].item}!`;
+  } else {
+    $("xpFill").style.width = "100%";
+    $("xpText").textContent = `${m.xp} XP · 최고 레벨 달성! 👑`;
+  }
+  $("syncText").textContent = local.pending.length ?"📴 인터넷 연결되면 기록을 올릴게요" : online === false ? "📴 서버에 연결하지 못했어요" : "☁️ 어느 폰에서든 이어서 할 수 있어요";
+  $("bestScore").textContent = m.best;
+  $("bestCombo").textContent = m.bestCombo;
+  $("plays").textContent = m.plays;
+  $("wrongCount").textContent = m.wrong.length;
+  $("retryHomeBtn").disabled = !m.wrong.length;
+  $("soundBtn").textContent = local.sound ? "🔊 소리" : "🔇 소리";
+}
+function renderFriends() {
+  const box = $("friendList");
+  if (friends === null) { box.innerHTML = '<div class="fempty">📴 친구 목록을 불러오지 못했어요</div>'; return; }
+  const list = friends.map(f => f.name.toLowerCase() === local.name.toLowerCase() ? { ...f, xp: Math.max(f.xp, local.me.xp) } : f);
+  if (!list.some(f => f.name.toLowerCase() === local.name.toLowerCase())) list.push({ name: local.me.name, xp: local.me.xp });
+  list.sort((a, b) => b.xp - a.xp);
+  box.innerHTML = list.map((f, i) => {
+    const lv = levelOf(f.xp), mine = f.name.toLowerCase() === local.name.toLowerCase();
+    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}</div><div class="mini">${david(lv)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
+  }).join("");
+}
+async function loadFriends() {
+  try { friends = (await api("/players")).players; online = true; }
+  catch (e) { friends = null; online = false; }
+}
+async function renderHome() {
+  show("home"); renderMe();
+  $("friendList").innerHTML = '<div class="fempty">⏳ 친구들을 불러오는 중...</div>';
+  await flush();
+  await loadFriends();
+  renderMe(); renderFriends();
+}
 
 /* ---------- 소리 ---------- */
 let ac;
 function tone(freqs, dur = .12, type = "triangle") {
-  if (!save.sound) return;
+  if (!local.sound) return;
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
     freqs.forEach((f, i) => {
@@ -317,40 +522,21 @@ function tone(freqs, dur = .12, type = "triangle") {
     });
   } catch (e) {}
 }
-const sfx = {
-  flip: () => tone([440, 660], .07),
-  hint: () => tone([880], .1, "sine"),
-  ok:   () => tone([523, 659, 784], .09),
-  no:   () => tone([300, 220], .13, "sawtooth"),
-  win:  () => tone([523, 659, 784, 1046], .14)
-};
-function renderSound() { $("soundBtn").textContent = save.sound ? "🔊 소리" : "🔇 소리"; }
-
-/* ---------- 홈 ---------- */
-function renderHome() {
-  const lv = Math.floor(save.xp / 100) + 1, cur = save.xp % 100;
-  $("lvNum").textContent = lv;
-  $("lvName").textContent = LEVELS[Math.min(lv - 1, LEVELS.length - 1)];
-  $("xpFill").style.width = cur + "%";
-  $("xpText").textContent = cur + " / 100 XP · 다음 레벨까지 " + (100 - cur);
-  $("bestScore").textContent = save.best;
-  $("bestCombo").textContent = save.bestCombo;
-  $("plays").textContent = save.plays;
-  $("wrongCount").textContent = save.wrong.length;
-  $("retryHomeBtn").disabled = !save.wrong.length;
-  renderSound();
-  show("home");
-}
+const sfx = { flip: () => tone([440, 660], .07), hint: () => tone([880], .1, "sine"), ok: () => tone([523, 659, 784], .09), no: () => tone([300, 220], .13, "sawtooth"), win: () => tone([523, 659, 784, 1046], .14), lvup: () => tone([392, 523, 659, 784, 1046, 1318], .1) };
 
 /* ---------- 게임 ---------- */
+let deck = [], idx = 0, score = 0, combo = 0, maxCombo = 0, right = 0, hintsUsed = 0, retryMode = false, roundWrong = [], roundFixed = [];
+
 function startGame(retry) {
   retryMode = retry;
-  const pool = retry ? books.filter(b => save.wrong.includes(b.name)) : books;
+  const pool = retry ? books.filter(b => local.me.wrong.includes(b.name)) : books;
   if (!pool.length) return;
-  deck = shuffle(pool); idx = 0; score = 0; combo = 0; maxCombo = 0; right = 0; roundWrong = [];
-  $("modeTag").innerHTML = retry ? "🔁 틀린 카드 <b id='score'>0</b>점" : "⭐ <b id='score'>0</b>점";
+  deck = shuffle(pool); idx = 0; score = 0; combo = 0; maxCombo = 0; right = 0; roundWrong = []; roundFixed = [];
+  $("combo").textContent = "";
+  updateScoreTag();
   show("game"); renderCard();
 }
+const updateScoreTag = () => $("modeTag").textContent = (retryMode ? "🔁 다시 풀기 · " : "⭐ ") + score + " XP";
 
 function renderCard() {
   const b = deck[idx];
@@ -361,109 +547,105 @@ function renderCard() {
   $("cardTag").textContent = retryMode ? "다시 도전 카드" : "초성 카드";
   $("initials").textContent = b.cho;
   $("hintBox").innerHTML = "";
-  const t = twins(b);
-  $("sameFront").classList.toggle("hidden", !t.length);
-  $("sameFront").textContent = "👀 이 초성은 성경이 2권 있어요! 힌트로 구별해 봐";
+  $("sameFront").classList.toggle("hidden", !twins(b).length);
   $("hintBtn").disabled = false;
   $("hintBtn").textContent = "💡 힌트 (" + b.hints.length + ")";
   $("frontControls").classList.remove("hidden");
   $("judgeControls").classList.add("hidden");
-  // 정답면은 뒤집을 때 채운다 (미리 보이지 않게)
   $("answer").textContent = ""; $("order").textContent = "";
   $("sameBack").classList.add("hidden");
 }
-
 function showHint() {
   const b = deck[idx];
   if (hintsUsed >= b.hints.length) return;
   const d = document.createElement("div");
   d.className = "hint"; d.textContent = "💡 " + b.hints[hintsUsed];
   $("hintBox").appendChild(d);
-  hintsUsed++;
-  sfx.hint();
+  hintsUsed++; sfx.hint();
   const left = b.hints.length - hintsUsed;
   $("hintBtn").textContent = left ? "💡 힌트 (" + left + ")" : "💡 힌트 끝";
   $("hintBtn").disabled = !left;
 }
-
 function flipCard() {
   const b = deck[idx], t = twins(b);
   $("answer").textContent = b.name;
   $("order").textContent = "구약 " + b.no + "번째 책";
-  if (t.length) {
-    $("sameBack").textContent = "같은 초성 " + b.cho + " → " + [b.name, ...t.map(x => x.name)].join(", ");
-    $("sameBack").classList.remove("hidden");
-  }
+  if (t.length) { $("sameBack").textContent = "같은 초성 " + b.cho + " → " + [b.name, ...t.map(x => x.name)].join(", "); $("sameBack").classList.remove("hidden"); }
   $("card").classList.add("on");
   $("frontControls").classList.add("hidden");
   $("judgeControls").classList.remove("hidden");
   sfx.flip();
 }
-
 function floater(text, miss) {
   const f = document.createElement("div");
   f.className = "floater" + (miss ? " miss" : ""); f.textContent = text;
   document.body.appendChild(f); setTimeout(() => f.remove(), 950);
 }
-
 function judge(ok) {
   const b = deck[idx];
+  $("judgeControls").classList.add("hidden");
   if (ok) {
     combo++; right++; maxCombo = Math.max(maxCombo, combo);
     const pts = [10, 6, 3][hintsUsed] + (combo >= 3 ? 2 : 0);
     score += pts;
-    if (retryMode) save.wrong = save.wrong.filter(n => n !== b.name);
-    floater("+" + pts);
-    sfx.ok();
+    if (retryMode) roundFixed.push(b.name);
+    floater("+" + pts + " XP"); sfx.ok();
   } else {
     combo = 0;
     if (!roundWrong.includes(b.name)) roundWrong.push(b.name);
-    if (!save.wrong.includes(b.name)) save.wrong.push(b.name);
-    floater("다시 기억해! 💪", true);
-    sfx.no();
+    floater("다시 기억해! 💪", true); sfx.no();
   }
-  $("score").textContent = score;
+  updateScoreTag();
   const c = $("combo");
   c.textContent = combo >= 2 ? "🔥 " + combo + " 콤보!" : "";
   c.classList.remove("pop"); void c.offsetWidth; if (combo >= 2) c.classList.add("pop");
-  persist();
-  $("judgeControls").classList.add("hidden");
   setTimeout(() => { idx++; idx < deck.length ? renderCard() : finish(); }, 380);
 }
 
 /* ---------- 결과 ---------- */
 function finish() {
   $("bar").style.width = "100%";
-  const total = deck.length, rate = right / total;
+  const m = local.me, total = deck.length, rate = right / total;
   const stars = rate === 1 ? 3 : rate >= .7 ? 2 : rate >= .4 ? 1 : 0;
-  let newRec = false;
-  save.xp += score; save.plays++;
-  if (!retryMode && score > save.best) { save.best = score; newRec = true; }
-  if (maxCombo > save.bestCombo) { save.bestCombo = maxCombo; newRec = true; }
-  persist();
+  const beforeLv = levelOf(m.xp);
+  const newRec = (!retryMode && score > m.best) || maxCombo > m.bestCombo;
+  const removeWrong = roundFixed.filter(n => !roundWrong.includes(n));
 
+  // 내 기록 바로 반영 (화면용) + 서버로 보낼 몫 쌓기
+  m.xp += score; m.plays++;
+  if (!retryMode) m.best = Math.max(m.best, score);
+  m.bestCombo = Math.max(m.bestCombo, maxCombo);
+  m.wrong = books.map(b => b.name).filter(n => (m.wrong.includes(n) && !removeWrong.includes(n)) || roundWrong.includes(n));
+  queue({ xp: score, plays: 1, score: retryMode ? 0 : score, combo: maxCombo, addWrong: roundWrong, removeWrong });
+  flush();
+
+  const afterLv = levelOf(m.xp);
   [...$("stars").children].forEach((s, i) => { s.className = i < stars ? "lit" : ""; s.style.animationDelay = (i * .2) + "s"; });
-  $("endEmoji").textContent = stars === 3 ? "🏆" : stars === 2 ? "🎉" : stars === 1 ? "👍" : "💪";
-  $("endTitle").textContent = stars === 3 ? "완벽해요!" : stars === 2 ? "아주 잘했어요!" : stars === 1 ? "좋아요, 조금만 더!" : "다시 해 보자!";
+  $("endTitle").textContent = stars === 3 ? "완벽해요! 🏆" : stars === 2 ? "아주 잘했어요! 🎉" : stars === 1 ? "좋아요, 조금만 더! 👍" : "다시 해 보자! 💪";
   $("endSub").textContent = retryMode ? "틀린 카드 다시 풀기 완료" : "22권 카드 도전 완료";
   $("newRec").classList.toggle("hidden", !newRec);
-  $("rScore").textContent = score;
+  $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
+  if (afterLv > beforeLv) {
+    $("luAvatar").innerHTML = david(afterLv);
+    $("luTitle").textContent = "레벨 업! Lv." + afterLv;
+    $("luItem").textContent = "새 장비 획득! " + TIERS[afterLv - 1].item;
+  }
+  $("rScore").textContent = "+" + score;
   $("rRight").textContent = right + "/" + total;
   $("rCombo").textContent = maxCombo;
-
   const wl = books.filter(b => roundWrong.includes(b.name));
   $("wrongBox").classList.toggle("hidden", !wl.length);
   $("wrongList").innerHTML = wl.map(b => "<span><small>" + b.cho + "</small>" + b.name + "</span>").join("");
-  $("retryEndBtn").classList.toggle("hidden", !save.wrong.length);
-  $("retryEndBtn").textContent = "🔁 틀린 카드 다시 풀기 (" + save.wrong.length + ")";
-
+  $("retryEndBtn").classList.toggle("hidden", !m.wrong.length);
+  $("retryEndBtn").textContent = "🔁 틀린 카드 다시 풀기 (" + m.wrong.length + ")";
+  persist();
   show("end");
-  if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
+  if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
+  else if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
 }
-
 function confetti(n) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const colors = ["#ffd54a","#3fd6a0","#ff6b6b","#4cc3ff","#ff7eb6","#b388ff"];
+  const colors = ["#ffd54a", "#3fd6a0", "#ff6b6b", "#4cc3ff", "#ff7eb6", "#b388ff"];
   for (let i = 0; i < n; i++) {
     const p = document.createElement("div");
     p.className = "confetti";
@@ -477,6 +659,12 @@ function confetti(n) {
 }
 
 /* ---------- 이벤트 ---------- */
+$("nameOk").onclick = () => chooseName($("nameInput").value);
+$("nameInput").onkeydown = e => { if (e.key === "Enter" && !e.isComposing) chooseName($("nameInput").value); };
+$("pickList").onclick = e => { const n = e.target.dataset.n; if (n) { $("nameInput").value = n; chooseName(n); } };
+$("nameCancel").onclick = renderHome;
+$("swapBtn").onclick = () => openName(true);
+$("refreshBtn").onclick = renderHome;
 $("startBtn").onclick = () => startGame(false);
 $("againBtn").onclick = () => startGame(false);
 $("retryHomeBtn").onclick = () => startGame(true);
@@ -486,12 +674,13 @@ $("hintBtn").onclick = showHint;
 $("flipBtn").onclick = flipCard;
 $("okBtn").onclick = () => judge(true);
 $("noBtn").onclick = () => judge(false);
-$("soundBtn").onclick = () => { save.sound = !save.sound; persist(); renderSound(); };
+$("soundBtn").onclick = () => { local.sound = !local.sound; persist(); renderMe(); };
 $("quitBtn").onclick = () => $("quitModal").classList.remove("hidden");
 $("stayBtn").onclick = () => $("quitModal").classList.add("hidden");
 $("leaveBtn").onclick = () => { $("quitModal").classList.add("hidden"); renderHome(); };
+window.addEventListener("online", () => flush().then(() => { if (!$("home").classList.contains("hidden")) renderHome(); }));
 
-renderHome();
+if (local.name && local.me) renderHome(); else openName(false);
 </script>
 </body>
 </html>
