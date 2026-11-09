@@ -71,9 +71,6 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
 .chip{background:#f3efff;border-radius:14px;padding:9px 4px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
 .chip b{display:block;font-size:20px;color:var(--ink)}
-.howto{display:flex;gap:6px;color:#fff;font-weight:800;font-size:13px;text-align:center;margin:16px 0}
-.howto div{flex:1;background:#ffffff1f;border-radius:14px;padding:10px 4px}
-.howto span{display:grid;place-items:center;width:40px;height:40px;margin:0 auto 5px;border-radius:12px;background:#ffffff26;font-size:22px}
 .stack{display:grid;gap:14px}
 .badge{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:1px 9px;font-size:15px;margin-left:6px;vertical-align:2px}
 
@@ -226,13 +223,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     </div>
   </div>
 
-  <div class="howto">
-    <div><span><i data-ic="eye"></i></span>초성 보기</div>
-    <div><span><i data-ic="pencil"></i></span>종이에 쓰기</div>
-    <div><span><i data-ic="flip"></i></span>뒤집어 확인</div>
-  </div>
-
-  <div class="stack">
+  <div class="stack" style="margin-top:18px">
     <button class="btn btn-gold" id="startBtn"><i data-ic="play"></i>22권 카드 도전!</button>
     <button class="btn btn-blue" id="retryHomeBtn"><i data-ic="retry"></i>틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
   </div>
