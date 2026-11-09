@@ -1,7 +1,10 @@
-// 속초교회 아동부 초성 성경 퀴즈 — 이름별 기록 동기화 API (Cloudflare Worker + KV)
+// 속초교회 아동부 초성 성경 퀴즈 — 앱 화면 + 이름별 기록 동기화 API (Cloudflare Worker + KV)
+// GET  /                   앱 화면 (저장소 루트의 index.html 을 함께 올려서 제공 → 깃허브가 막혀도 열림)
 // GET  /players            모든 친구의 요약 (xp 높은 순)
 // GET  /player?name=이름     한 명의 전체 기록
 // POST /player             { name, xp, plays, score, combo, addWrong:[], removeWrong:[] } 를 누적 반영
+
+import APP_HTML from "./index.html";
 
 const BOOKS = ["창세기","출애굽기","레위기","민수기","신명기","여호수아","사사기","룻기","사무엘상","사무엘하",
   "열왕기상","열왕기하","역대상","역대하","에스라","느헤미야","에스더","욥기","시편","잠언","전도서","아가"];
@@ -66,7 +69,10 @@ export default {
         return json({ player: p });
       }
 
-      if (url.pathname === "/") return json({ ok: true, app: "bible-quiz-api" });
+      if ((url.pathname === "/" || url.pathname === "/index.html") && req.method === "GET") {
+        return new Response(APP_HTML, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
+      }
+      if (url.pathname === "/health") return json({ ok: true, app: "bible-quiz-api" });
       return json({ error: "not found" }, 404);
     } catch (e) {
       return json({ error: "server error" }, 500);
