@@ -404,20 +404,35 @@ const TIERS = [
 const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
 const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
 
-// 친구별 망토 색 (이름: [망토색, 테두리색])
+// 직접 정해 준 친구별 망토 색과 갑옷 문양 (Lv.10 랜덤보다 우선)
 const CAPE_COLORS = { "정이엘": ["#3b82f6", "#1d4ed8"] };
-const capeOf = name => CAPE_COLORS[cleanName(name)] || ["#d94a4a", "#9e2c2c"];
-// 친구별 갑옷 가슴 문양
 const EMBLEMS = { "정이엘": "spider" };
-const emblemOf = name => EMBLEMS[cleanName(name)];
-const SPIDER = '<g stroke="#2b2350" stroke-width="1.6" stroke-linecap="round" fill="none">'
-  + '<path d="M57 74 Q51 70 49 66 M57 76 Q50 75 47 73 M57 79 Q50 81 48 85 M58 81 Q53 86 52 90"/>'
-  + '<path d="M63 74 Q69 70 71 66 M63 76 Q70 75 73 73 M63 79 Q70 81 72 85 M62 81 Q67 86 68 90"/></g>'
-  + '<ellipse cx="60" cy="80" rx="4" ry="5.5" fill="#2b2350"/><circle cx="60" cy="72.5" r="3" fill="#2b2350"/>';
+const DEFAULT_CAPE = ["#d94a4a", "#9e2c2c"];
+// Lv.10 왕 다윗이 되면 이름마다 정해지는 랜덤 망토 색과 갑옷 문양 (어느 폰에서 봐도 같음)
+const LV10_CAPES = [["#3b82f6", "#1d4ed8"], ["#22c55e", "#15803d"], ["#a855f7", "#7e22ce"], ["#f97316", "#c2410c"],
+  ["#ec4899", "#be185d"], ["#14b8a6", "#0f766e"], ["#1e3a8a", "#172554"], ["#334155", "#0f172a"]];
+const LV10_EMBLEMS = ["star", "bolt", "heart", "moon", "flame", "fish", "sun"];
+const nameHash = name => { let h = 2166136261; for (const c of cleanName(name)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; };
+const capeOf = (name, level) => CAPE_COLORS[cleanName(name)] || (level >= 10 && name ? LV10_CAPES[nameHash(name) % LV10_CAPES.length] : DEFAULT_CAPE);
+const emblemOf = (name, level) => EMBLEMS[cleanName(name)] || (level >= 10 && name ? LV10_EMBLEMS[(nameHash(name) >>> 8) % LV10_EMBLEMS.length] : null);
+const INK = "#2b2350";
+const EMBLEM_SVG = {
+  spider: '<g stroke="' + INK + '" stroke-width="1.6" stroke-linecap="round" fill="none">'
+    + '<path d="M57 74 Q51 70 49 66 M57 76 Q50 75 47 73 M57 79 Q50 81 48 85 M58 81 Q53 86 52 90"/>'
+    + '<path d="M63 74 Q69 70 71 66 M63 76 Q70 75 73 73 M63 79 Q70 81 72 85 M62 81 Q67 86 68 90"/></g>'
+    + '<ellipse cx="60" cy="80" rx="4" ry="5.5" fill="' + INK + '"/><circle cx="60" cy="72.5" r="3" fill="' + INK + '"/>',
+  star: '<path d="M60 68 L62.9 74.4 L69.8 75.1 L64.6 79.7 L66.1 86.5 L60 83 L53.9 86.5 L55.4 79.7 L50.2 75.1 L57.1 74.4 Z" fill="#fff" stroke="' + INK + '" stroke-width="1.5" stroke-linejoin="round"/>',
+  bolt: '<path d="M63 67 L53 80 L59 80 L56 90 L67 76 L61 76 Z" fill="#4cc3ff" stroke="' + INK + '" stroke-width="1.5" stroke-linejoin="round"/>',
+  heart: '<path d="M60 88 C50 81 51 71 56.5 71.5 C58.5 71.7 59.5 73 60 74.5 C60.5 73 61.5 71.7 63.5 71.5 C69 71 70 81 60 88 Z" fill="#ef4444" stroke="' + INK + '" stroke-width="1.5"/>',
+  moon: '<path d="M64 68.5 A10 10 0 1 0 64 88.5 A7.5 7.5 0 1 1 64 68.5 Z" fill="#fff" stroke="' + INK + '" stroke-width="1.5"/>',
+  flame: '<path d="M60 67 C62 72 68 74 66.5 81.5 C65.5 86 62.5 88.5 60 88.5 C56.5 88.5 53 85.5 53.5 80.5 C54 77 56.5 75.5 57 73 C58.5 75 59 77 59 78.5 C61 76 61.5 71 60 67 Z" fill="#f97316" stroke="' + INK + '" stroke-width="1.5" stroke-linejoin="round"/>',
+  fish: '<path d="M49 78 Q57 69 67 78 Q57 87 49 78 Z M67 78 L72 73.5 M67 78 L72 82.5" fill="none" stroke="' + INK + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  sun: '<g stroke="' + INK + '" stroke-width="1.5" stroke-linecap="round"><path d="M60 66 V69 M60 87 V90 M48 78 H51 M69 78 H72 M51.5 69.5 L53.6 71.6 M66.4 84.4 L68.5 86.5 M51.5 86.5 L53.6 84.4 M66.4 71.6 L68.5 69.5"/></g><circle cx="60" cy="78" r="6" fill="#ffd54a" stroke="' + INK + '" stroke-width="1.5"/>'
+};
 function david(level, name) {
   const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
   if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
-  if (t.cape) O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${capeOf(name)[0]}" stroke="${capeOf(name)[1]}" stroke-width="2"/>`);
+  if (t.cape) O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${capeOf(name, level)[0]}" stroke="${capeOf(name, level)[1]}" stroke-width="2"/>`);
   if (t.staff) O.push('<path d="M88 40 L84 128" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M88 41 Q86 26 97 28 Q105 30 102 40" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>');
   O.push(`<rect x="50" y="100" width="8" height="22" rx="3" fill="${SK}"/><rect x="62" y="100" width="8" height="22" rx="3" fill="${SK}"/>`);
   O.push('<rect x="47" y="119" width="13" height="6" rx="3" fill="#7a4a24"/><rect x="60" y="119" width="13" height="6" rx="3" fill="#7a4a24"/>');
@@ -425,7 +440,8 @@ function david(level, name) {
   if (t.armor) {
     const [a, b] = MAT[t.armor];
     O.push(`<path d="M46 63 Q60 59 74 63 L76 92 Q60 96 44 92 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
-    if (emblemOf(name) === "spider") O.push(SPIDER);
+    const em = emblemOf(name, level);
+    if (em) O.push(EMBLEM_SVG[em]);
     else if (t.armor !== "leather") O.push(`<path d="M60 63 V94 M49 76 Q60 80 71 76" fill="none" stroke="${b}" stroke-width="2"/>`);
     O.push('<rect x="42" y="89" width="36" height="6" rx="2" fill="#6e4322"/><rect x="57" y="88" width="6" height="8" rx="1" fill="#ffd54a"/>');
   } else O.push('<rect x="42" y="88" width="36" height="4" rx="2" fill="#c8a165"/>');
