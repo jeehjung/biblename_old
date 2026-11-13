@@ -404,10 +404,13 @@ const TIERS = [
 const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
 const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
 
-function david(level) {
+// 친구별 망토 색 (이름: [망토색, 테두리색])
+const CAPE_COLORS = { "정이엘": ["#3b82f6", "#1d4ed8"] };
+const capeOf = name => CAPE_COLORS[cleanName(name)] || ["#d94a4a", "#9e2c2c"];
+function david(level, name) {
   const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
   if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
-  if (t.cape) O.push('<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="#d94a4a" stroke="#9e2c2c" stroke-width="2"/>');
+  if (t.cape) O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${capeOf(name)[0]}" stroke="${capeOf(name)[1]}" stroke-width="2"/>`);
   if (t.staff) O.push('<path d="M88 40 L84 128" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M88 41 Q86 26 97 28 Q105 30 102 40" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>');
   O.push(`<rect x="50" y="100" width="8" height="22" rx="3" fill="${SK}"/><rect x="62" y="100" width="8" height="22" rx="3" fill="${SK}"/>`);
   O.push('<rect x="47" y="119" width="13" height="6" rx="3" fill="#7a4a24"/><rect x="60" y="119" width="13" height="6" rx="3" fill="#7a4a24"/>');
@@ -512,7 +515,7 @@ async function chooseName(raw) {
 /* 홈 */
 function renderMe() {
   const m = local.me, lv = levelOf(m.xp), t = TIERS[lv - 1];
-  $("myAvatar").innerHTML = david(lv);
+  $("myAvatar").innerHTML = david(lv, m.name);
   $("myName").textContent = m.name;
   $("myLv").textContent = "Lv." + lv;
   $("myTitle").textContent = t.title;
@@ -540,7 +543,7 @@ function renderFriends() {
   list.sort((a, b) => b.xp - a.xp);
   box.innerHTML = list.map((f, i) => {
     const lv = levelOf(f.xp), mine = f.name.toLowerCase() === local.name.toLowerCase();
-    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${david(lv)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
+    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${david(lv, f.name)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
   }).join("");
 }
 async function loadFriends() {
@@ -689,7 +692,7 @@ function finish() {
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    $("luAvatar").innerHTML = david(afterLv);
+    $("luAvatar").innerHTML = david(afterLv, m.name);
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
     $("luItem").textContent = "새 장비 획득: " + TIERS[afterLv - 1].item;
   }
