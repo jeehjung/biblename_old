@@ -407,6 +407,13 @@ const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iro
 // 친구별 망토 색 (이름: [망토색, 테두리색])
 const CAPE_COLORS = { "정이엘": ["#3b82f6", "#1d4ed8"] };
 const capeOf = name => CAPE_COLORS[cleanName(name)] || ["#d94a4a", "#9e2c2c"];
+// 친구별 갑옷 가슴 문양
+const EMBLEMS = { "정이엘": "spider" };
+const emblemOf = name => EMBLEMS[cleanName(name)];
+const SPIDER = '<g stroke="#2b2350" stroke-width="1.6" stroke-linecap="round" fill="none">'
+  + '<path d="M57 74 Q51 70 49 66 M57 76 Q50 75 47 73 M57 79 Q50 81 48 85 M58 81 Q53 86 52 90"/>'
+  + '<path d="M63 74 Q69 70 71 66 M63 76 Q70 75 73 73 M63 79 Q70 81 72 85 M62 81 Q67 86 68 90"/></g>'
+  + '<ellipse cx="60" cy="80" rx="4" ry="5.5" fill="#2b2350"/><circle cx="60" cy="72.5" r="3" fill="#2b2350"/>';
 function david(level, name) {
   const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
   if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
@@ -418,7 +425,8 @@ function david(level, name) {
   if (t.armor) {
     const [a, b] = MAT[t.armor];
     O.push(`<path d="M46 63 Q60 59 74 63 L76 92 Q60 96 44 92 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
-    if (t.armor !== "leather") O.push(`<path d="M60 63 V94 M49 76 Q60 80 71 76" fill="none" stroke="${b}" stroke-width="2"/>`);
+    if (emblemOf(name) === "spider") O.push(SPIDER);
+    else if (t.armor !== "leather") O.push(`<path d="M60 63 V94 M49 76 Q60 80 71 76" fill="none" stroke="${b}" stroke-width="2"/>`);
     O.push('<rect x="42" y="89" width="36" height="6" rx="2" fill="#6e4322"/><rect x="57" y="88" width="6" height="8" rx="1" fill="#ffd54a"/>');
   } else O.push('<rect x="42" y="88" width="36" height="4" rx="2" fill="#c8a165"/>');
   O.push(`<path d="M46 66 L34 86 M74 66 L86 84" stroke="${SK}" stroke-width="8" stroke-linecap="round"/>`);
