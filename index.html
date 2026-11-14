@@ -388,7 +388,9 @@ const books = BOOKS.map(([name, hints], i) => ({ name, hints, no: i + 1, cho: ch
 const twins = b => books.filter(x => x.cho === b.cho && x.name !== b.name);
 
 /* ---------- 다윗 레벨과 장비 ---------- */
-const NEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
+const NEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200,
+  4000, 4900, 5900, 7000, 8200, 9500, 10900, 12400, 14000, 15700];
+const KING = { sword: "gold", shield: "gold", armor: "gold", crown: 1, cape: 1, glow: 1 };
 const TIERS = [
   { title: "목동 다윗",     item: "물맷돌과 지팡이", staff: 1 },
   { title: "나무 칼 다윗",   item: "나무 칼", sword: "wood" },
@@ -399,10 +401,20 @@ const TIERS = [
   { title: "은빛 기사 다윗", item: "은빛 장비 세트", sword: "silver", shield: "silver", armor: "silver", helm: "silver" },
   { title: "황금 용사 다윗", item: "황금 장비 세트", sword: "gold", shield: "gold", armor: "gold", helm: "gold" },
   { title: "망토 장군 다윗", item: "붉은 망토", sword: "gold", shield: "gold", armor: "gold", helm: "gold", cape: 1 },
-  { title: "왕 다윗",       item: "왕관", sword: "gold", shield: "gold", armor: "gold", crown: 1, cape: 1, glow: 1 }
+  { title: "왕 다윗",       item: "왕관", ...KING },
+  { title: "수정 칼 다윗",   item: "수정 칼", ...KING, sword: "crystal" },
+  { title: "수정 방패 다윗", item: "수정 방패", ...KING, sword: "crystal", shield: "crystal" },
+  { title: "수정 갑옷 다윗", item: "수정 갑옷", ...KING, sword: "crystal", shield: "crystal", armor: "crystal" },
+  { title: "보석 왕관 다윗", item: "보석 왕관", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1 },
+  { title: "빛의 칼 다윗",   item: "빛나는 칼", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1 },
+  { title: "날개 다윗",      item: "하늘 날개", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1, wings: 1 },
+  { title: "빛의 방패 다윗", item: "빛나는 방패", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1, wings: 1, shieldGlow: 1 },
+  { title: "별빛 망토 다윗", item: "별빛 망토", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1, wings: 1, shieldGlow: 1, stars: 1 },
+  { title: "영광의 다윗",    item: "영광의 빛", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1, wings: 1, shieldGlow: 1, stars: 1, rays: 1 },
+  { title: "레이저 용사 다윗", item: "손에서 나가는 레이저", ...KING, sword: "crystal", shield: "crystal", armor: "crystal", jewels: 1, swordGlow: 1, wings: 1, shieldGlow: 1, stars: 1, rays: 1, laser: 1 }
 ];
 const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
-const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
+const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"], crystal: ["#c7f0ff", "#3b9fd1"] };
 
 // 직접 정해 준 친구별 망토 색과 갑옷 문양 (Lv.10 랜덤보다 우선)
 // "rainbow"는 무지개 망토
@@ -434,7 +446,20 @@ const EMBLEM_SVG = {
 };
 function david(level, name) {
   const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
+  const shieldSvg = () => {
+    const [a, b] = MAT[t.shield];
+    let g = "";
+    if (t.shieldGlow) g = '<path d="M73 71 H99 V88 Q99 103 86 109 Q73 103 73 88 Z" fill="none" stroke="#7fe3ff" stroke-width="7" opacity=".45"/>';
+    const mark = t.shield === "crystal"
+      ? '<path d="M86 76 L92 86 L86 99 L80 86 Z" fill="#fff" stroke="#3b9fd1" stroke-width="1.5"/>'
+      : `<path d="M86 77 V101 M78 86 H94" stroke="${t.shield === "gold" ? "#d94a4a" : b}" stroke-width="3.5" stroke-linecap="round"/>`;
+    return g + `<path d="M73 71 H99 V88 Q99 103 86 109 Q73 103 73 88 Z" fill="${a}" stroke="${b}" stroke-width="2.5"/>` + mark;
+  };
+  if (t.rays) O.push('<g stroke="#ffe27a" stroke-width="4" stroke-linecap="round" opacity=".75"><path d="M60 6 V0 M60 138 V132 M8 72 H2 M118 72 H112 M24 30 L19 25 M96 30 L101 25 M24 114 L19 119 M96 114 L101 119"/></g>');
   if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
+  if (t.wings) O.push('<g fill="#ffffff" stroke="#9fd8f5" stroke-width="2" stroke-linejoin="round">'
+    + '<path d="M48 70 Q22 50 6 60 Q16 64 12 72 Q22 72 20 80 Q32 78 46 82 Z"/><path d="M72 70 Q98 50 114 60 Q104 64 108 72 Q98 72 100 80 Q88 78 74 82 Z"/></g>'
+    + '<path d="M44 74 Q28 66 16 66 M76 74 Q92 66 104 66" fill="none" stroke="#9fd8f5" stroke-width="1.5"/>');
   if (t.cape) {
     const cape = capeOf(name, level);
     if (cape === "rainbow") {
@@ -442,7 +467,10 @@ function david(level, name) {
       O.push(`<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${RAINBOW.map((c, i) => `<stop offset="${(i / (RAINBOW.length - 1) * 100).toFixed(1)}%" stop-color="${c}"/>`).join("")}</linearGradient></defs>`);
       O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="url(#${id})" stroke="#6b21a8" stroke-width="2"/>`);
     } else O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${cape[0]}" stroke="${cape[1]}" stroke-width="2"/>`);
+    if (t.stars) O.push('<g fill="#fffbe0"><circle cx="35" cy="121" r="1.6"/><circle cx="85" cy="122" r="1.6"/><circle cx="83" cy="108" r="1.3"/><circle cx="37" cy="106" r="1.3"/><path d="M86 115 l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3z"/><path d="M33 113 l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3z"/></g>');
   }
+  // 레이저 자세: 방패를 등 뒤로 메고 오른손을 들어 올림
+  if (t.laser && t.shield) O.push(shieldSvg());
   if (t.staff) O.push('<path d="M88 40 L84 128" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M88 41 Q86 26 97 28 Q105 30 102 40" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>');
   O.push(`<rect x="50" y="100" width="8" height="22" rx="3" fill="${SK}"/><rect x="62" y="100" width="8" height="22" rx="3" fill="${SK}"/>`);
   O.push('<rect x="47" y="119" width="13" height="6" rx="3" fill="#7a4a24"/><rect x="60" y="119" width="13" height="6" rx="3" fill="#7a4a24"/>');
@@ -450,23 +478,30 @@ function david(level, name) {
   if (t.armor) {
     const [a, b] = MAT[t.armor];
     O.push(`<path d="M46 63 Q60 59 74 63 L76 92 Q60 96 44 92 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
+    if (t.armor === "crystal") O.push('<path d="M50 66 L54 70 M66 70 L70 66 M48 84 L52 88 M68 88 L72 84" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".9"/>');
     const em = emblemOf(name, level);
     if (em) O.push(EMBLEM_SVG[em]);
     else if (t.armor !== "leather") O.push(`<path d="M60 63 V94 M49 76 Q60 80 71 76" fill="none" stroke="${b}" stroke-width="2"/>`);
     O.push('<rect x="42" y="89" width="36" height="6" rx="2" fill="#6e4322"/><rect x="57" y="88" width="6" height="8" rx="1" fill="#ffd54a"/>');
   } else O.push('<rect x="42" y="88" width="36" height="4" rx="2" fill="#c8a165"/>');
-  O.push(`<path d="M46 66 L34 86 M74 66 L86 84" stroke="${SK}" stroke-width="8" stroke-linecap="round"/>`);
+  const handR = t.laser ? [97, 54] : [86, 86];
+  if (t.laser) O.push(`<path d="M74 66 L${handR[0]} ${handR[1]}" stroke="#e8a77c" stroke-width="10.5" stroke-linecap="round"/>`);
+  O.push(`<path d="M46 66 L34 86 M74 66 L${handR[0]} ${handR[1]}" stroke="${SK}" stroke-width="8" stroke-linecap="round"/>`);
   if (t.armor) { const [a, b] = MAT[t.armor]; O.push(`<circle cx="46" cy="66" r="7" fill="${a}" stroke="${b}" stroke-width="2"/><circle cx="74" cy="66" r="7" fill="${a}" stroke="${b}" stroke-width="2"/>`); }
   if (t.sword) {
     const [a, b] = MAT[t.sword];
+    if (t.swordGlow) O.push('<path d="M31 84 L31 40 L34 33 L37 40 L37 84 Z" fill="#7fe3ff" stroke="#7fe3ff" stroke-width="7" stroke-linejoin="round" opacity=".45"/>');
     O.push(`<path d="M31 84 L31 40 L34 33 L37 40 L37 84 Z" fill="${a}" stroke="${b}" stroke-width="2"/><rect x="25" y="81" width="18" height="5" rx="2" fill="${b}"/><rect x="32" y="86" width="4" height="9" fill="#5a3a1e"/>`);
+    if (t.sword === "crystal") O.push('<path d="M34 38 V80" stroke="#fff" stroke-width="1.5" opacity=".9"/>');
   }
   if (t.staff) O.push('<path d="M34 88 Q24 100 30 111" fill="none" stroke="#c8a165" stroke-width="2"/><circle cx="30" cy="113" r="4.5" fill="#9e9e9e" stroke="#6f6f6f"/>');
-  O.push(`<circle cx="34" cy="88" r="5" fill="${SK}"/><circle cx="86" cy="86" r="5" fill="${SK}"/>`);
-  if (t.shield) {
-    const [a, b] = MAT[t.shield];
-    O.push(`<path d="M73 71 H99 V88 Q99 103 86 109 Q73 103 73 88 Z" fill="${a}" stroke="${b}" stroke-width="2.5"/><path d="M86 77 V101 M78 86 H94" stroke="${t.shield === "gold" ? "#d94a4a" : b}" stroke-width="3.5" stroke-linecap="round"/>`);
-  }
+  O.push(`<circle cx="34" cy="88" r="5" fill="${SK}"/><circle cx="${handR[0]}" cy="${handR[1]}" r="5" fill="${SK}"/>`);
+  if (t.shield && !t.laser) O.push(shieldSvg());
+  if (t.laser) O.push('<path d="M100 51 L126 30" stroke="#ff4fd8" stroke-width="15" stroke-linecap="round" opacity=".3"/>'
+    + '<path d="M100 51 L126 30" stroke="#ff6fe0" stroke-width="8" stroke-linecap="round"/>'
+    + '<path d="M100 51 L126 30" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>'
+    + '<g stroke="#ff6fe0" stroke-width="2" stroke-linecap="round"><path d="M101 42 L103 37 M108 50 L113 49 M95 46 L91 42"/></g>'
+    + `<circle cx="${handR[0]}" cy="${handR[1]}" r="5.5" fill="${SK}" stroke="#e8a77c" stroke-width="1.5"/>`);
   O.push(`<rect x="55" y="56" width="10" height="8" fill="${SK}"/><circle cx="60" cy="42" r="19" fill="${SK}"/>`);
   O.push('<path d="M41 43 Q39 21 60 20 Q81 21 79 43 Q75 31 60 31 Q45 31 41 43 Z" fill="#6b3f1f"/><circle cx="43" cy="36" r="4" fill="#6b3f1f"/><circle cx="77" cy="36" r="4" fill="#6b3f1f"/>');
   O.push('<circle cx="53" cy="44" r="2.5" fill="#2b2350"/><circle cx="67" cy="44" r="2.5" fill="#2b2350"/><circle cx="49" cy="50" r="3" fill="#ff9fae" opacity=".7"/><circle cx="71" cy="50" r="3" fill="#ff9fae" opacity=".7"/><path d="M54 51 Q60 56 66 51" fill="none" stroke="#2b2350" stroke-width="2" stroke-linecap="round"/>');
@@ -475,7 +510,11 @@ function david(level, name) {
     O.push(`<path d="M39 42 Q39 17 60 17 Q81 17 81 42 L77 42 Q76 28 60 28 Q44 28 43 42 Z" fill="${a}" stroke="${b}" stroke-width="2"/>`);
     if (t.helm !== "iron") O.push('<path d="M60 18 Q65 5 77 7 Q69 11 65 19 Z" fill="#e53935"/>');
   }
-  if (t.crown) O.push('<path d="M44 27 L47 13 L54 21 L60 8 L66 21 L73 13 L76 27 Z" fill="#ffd54a" stroke="#c58a00" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="21" r="2.5" fill="#e53935"/><circle cx="50" cy="23" r="2" fill="#4cc3ff"/><circle cx="70" cy="23" r="2" fill="#4cc3ff"/>');
+  if (t.crown) {
+    O.push('<path d="M44 27 L47 13 L54 21 L60 8 L66 21 L73 13 L76 27 Z" fill="#ffd54a" stroke="#c58a00" stroke-width="2" stroke-linejoin="round"/>');
+    if (t.jewels) O.push('<path d="M60 14 L64 20 L60 25 L56 20 Z" fill="#e53935" stroke="#9e1c1c" stroke-width="1"/><circle cx="50" cy="23" r="2.6" fill="#22c55e"/><circle cx="70" cy="23" r="2.6" fill="#3b82f6"/><circle cx="47" cy="13" r="2" fill="#fff"/><circle cx="60" cy="8" r="2" fill="#fff"/><circle cx="73" cy="13" r="2" fill="#fff"/>');
+    else O.push('<circle cx="60" cy="21" r="2.5" fill="#e53935"/><circle cx="50" cy="23" r="2" fill="#4cc3ff"/><circle cx="70" cy="23" r="2" fill="#4cc3ff"/>');
+  }
   return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
 }
 
