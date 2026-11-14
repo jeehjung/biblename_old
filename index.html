@@ -405,7 +405,10 @@ const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++;
 const MAT = { wood: ["#d39a5e", "#8a5a2b"], leather: ["#a8703f", "#6e4322"], iron: ["#b4bec9", "#66727f"], silver: ["#f1f4f9", "#98a4b5"], gold: ["#ffd54a", "#c58a00"] };
 
 // 직접 정해 준 친구별 망토 색과 갑옷 문양 (Lv.10 랜덤보다 우선)
-const CAPE_COLORS = { "정이엘": ["#3b82f6", "#1d4ed8"] };
+// "rainbow"는 무지개 망토
+const CAPE_COLORS = { "정이엘": ["#3b82f6", "#1d4ed8"], "정이언": "rainbow" };
+const RAINBOW = ["#ef4444", "#f97316", "#facc15", "#22c55e", "#3b82f6", "#6366f1", "#a855f7"];
+let rainbowSeq = 0;
 const EMBLEMS = { "정이엘": "spider" };
 const DEFAULT_CAPE = ["#d94a4a", "#9e2c2c"];
 // Lv.10 왕 다윗이 되면 이름마다 정해지는 랜덤 망토 색과 갑옷 문양 (어느 폰에서 봐도 같음)
@@ -432,7 +435,14 @@ const EMBLEM_SVG = {
 function david(level, name) {
   const t = TIERS[Math.min(level, TIERS.length) - 1], SK = "#ffd3ad", O = [];
   if (t.glow) O.push('<circle cx="60" cy="72" r="58" fill="#fff3a6" opacity=".6"/>');
-  if (t.cape) O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${capeOf(name, level)[0]}" stroke="${capeOf(name, level)[1]}" stroke-width="2"/>`);
+  if (t.cape) {
+    const cape = capeOf(name, level);
+    if (cape === "rainbow") {
+      const id = "rb" + (++rainbowSeq);
+      O.push(`<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${RAINBOW.map((c, i) => `<stop offset="${(i / (RAINBOW.length - 1) * 100).toFixed(1)}%" stop-color="${c}"/>`).join("")}</linearGradient></defs>`);
+      O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="url(#${id})" stroke="#6b21a8" stroke-width="2"/>`);
+    } else O.push(`<path d="M44 64 L76 64 L90 128 Q60 134 30 128 Z" fill="${cape[0]}" stroke="${cape[1]}" stroke-width="2"/>`);
+  }
   if (t.staff) O.push('<path d="M88 40 L84 128" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M88 41 Q86 26 97 28 Q105 30 102 40" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>');
   O.push(`<rect x="50" y="100" width="8" height="22" rx="3" fill="${SK}"/><rect x="62" y="100" width="8" height="22" rx="3" fill="${SK}"/>`);
   O.push('<rect x="47" y="119" width="13" height="6" rx="3" fill="#7a4a24"/><rect x="60" y="119" width="13" height="6" rx="3" fill="#7a4a24"/>');
