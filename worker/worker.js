@@ -6,7 +6,7 @@
 
 import APP_HTML from "./index.html";
 
-// 다윗(창세기~아가): 이제 복습용 — 경험치는 더 쌓이지 않고 틀린 카드만 기록
+// 다윗(창세기~아가): 복습 문제 — xp, wrong 등 기존 필드에 기록
 const BOOKS = ["창세기","출애굽기","레위기","민수기","신명기","여호수아","사사기","룻기","사무엘상","사무엘하",
   "열왕기상","열왕기하","역대상","역대하","에스라","느헤미야","에스더","욥기","시편","잠언","전도서","아가"];
 // 다니엘(이사야~말라기): 지금 도전하는 문제 — dxp, dwrong 등 d로 시작하는 필드에 기록
@@ -66,7 +66,9 @@ export default {
           p.dbest = Math.max(p.dbest, num(b.score, 400)); p.dcombo = Math.max(p.dcombo, num(b.combo, 17));
           p.dwrong = nextWrong(p.dwrong, pick(b.addWrong, PROPHETS), pick(b.removeWrong, PROPHETS), PROPHETS);
         } else {
-          // 예전 문제(복습): 다윗은 더 성장하지 않음 — 틀린 카드 목록만 갱신
+          // 예전 문제(복습): 다윗이 성장
+          p.xp += num(b.xp, 3000); p.plays += num(b.plays, 20);
+          p.best = Math.max(p.best, num(b.score, 400)); p.bestCombo = Math.max(p.bestCombo, num(b.combo, 22));
           p.wrong = nextWrong(p.wrong, pick(b.addWrong, BOOKS), pick(b.removeWrong, BOOKS), BOOKS);
         }
         p.updated = Date.now();

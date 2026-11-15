@@ -240,7 +240,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 
   <div class="review">
     <h3><i data-ic="book"></i>복습: 창세기 ~ 아가 22권</h3>
-    <p>예전 문제를 다시 풀어요. 복습은 경험치가 쌓이지 않아요.</p>
+    <p>예전 문제를 다시 풀어요. 복습 경험치는 다윗에게 쌓여요.</p>
     <div class="row2">
       <button class="btn btn-plain btn-sm" id="reviewBtn">22권 복습</button>
       <button class="btn btn-plain btn-sm" id="reviewRetryBtn">틀린 카드 복습</button>
@@ -426,8 +426,9 @@ const PROPHETS = [
 ];
 const mkBooks = (list, start) => list.map(([name, hints], i) => ({ name, hints, no: start + i, cho: chosung(name) }));
 const QUIZZES = {
-  main:   { key: "prophets", books: mkBooks(PROPHETS, 23), label: "17권", xp: true,  wrongKey: "dwrong" },
-  review: { key: "old",      books: mkBooks(BOOKS, 1),     label: "22권 복습", xp: false, wrongKey: "wrong" }
+  // 새 문제 → 다니엘(dxp…), 복습 → 다윗(xp…)
+  main:   { key: "prophets", books: mkBooks(PROPHETS, 23), label: "17권", xp: true, wrongKey: "dwrong", xpKey: "dxp", bestKey: "dbest", comboKey: "dcombo", playsKey: "dplays" },
+  review: { key: "old",      books: mkBooks(BOOKS, 1),     label: "22권 복습", xp: true, wrongKey: "wrong", xpKey: "xp", bestKey: "best", comboKey: "bestCombo", playsKey: "plays" }
 };
 let quiz = QUIZZES.main;
 const twins = b => quiz.books.filter(x => x.cho === b.cho && x.name !== b.name);
@@ -839,14 +840,14 @@ function startGame(retry, which) {
   const pool = retry ? quiz.books.filter(b => local.me[quiz.wrongKey].includes(b.name)) : quiz.books;
   if (!pool.length) return;
   deck = shuffle(pool); idx = 0; score = 0; combo = 0; maxCombo = 0; right = 0; roundWrong = []; roundFixed = [];
-  savedXp = 0; savedWrong = []; savedFixed = []; startXp = local.me.dxp; startBest = local.me.dbest; startCombo = local.me.dcombo;
-  $("quitMsg").textContent = quiz.xp ? "지금까지 푼 만큼 경험치가 저장돼요." : "지금까지 푼 틀린 카드 기록이 저장돼요.";
+  savedXp = 0; savedWrong = []; savedFixed = []; startXp = local.me[quiz.xpKey]; startBest = local.me[quiz.bestKey]; startCombo = local.me[quiz.comboKey];
+  $("quitMsg").textContent = quiz === QUIZZES.review ? "지금까지 푼 만큼 다윗 경험치가 저장돼요." : "지금까지 푼 만큼 다니엘 경험치가 저장돼요.";
   $("combo").textContent = "";
   updateScoreTag();
   show("game"); renderCard();
 }
-const updateScoreTag = () => $("modeTag").innerHTML = !quiz.xp ? ic("book") + "복습 · 맞힌 카드 " + right
-  : ic(retryMode ? "retry" : "star", retryMode ? "" : "f") + (retryMode ? "다시 풀기 · " : "") + score + " XP";
+const updateScoreTag = () => $("modeTag").innerHTML = ic(retryMode ? "retry" : quiz === QUIZZES.review ? "book" : "star", retryMode || quiz === QUIZZES.review ? "" : "f")
+  + (quiz === QUIZZES.review ? "다윗 복습 · " : "") + (retryMode ? "다시 풀기 · " : "") + score + " XP";
 
 function renderCard() {
   const b = deck[idx];
@@ -920,18 +921,13 @@ function checkpoint(final) {
   const fixed = roundFixed.filter(n => !roundWrong.includes(n));
   const addWrong = roundWrong.filter(n => !savedWrong.includes(n));
   const removeWrong = fixed.filter(n => !savedFixed.includes(n));
-  const comboUp = quiz.xp && maxCombo > m.dcombo;
+  const comboUp = maxCombo > m[quiz.comboKey];
   if (!final && !xp && !addWrong.length && !removeWrong.length && !comboUp) return;
-  if (!quiz.xp && !addWrong.length && !removeWrong.length) return;
-  if (quiz.xp) {
-    m.dxp += xp;
-    if (final) { m.dplays++; if (!retryMode) m.dbest = Math.max(m.dbest, score); }
-    m.dcombo = Math.max(m.dcombo, maxCombo);
-  }
+  m[quiz.xpKey] += xp;
+  if (final) { m[quiz.playsKey]++; if (!retryMode) m[quiz.bestKey] = Math.max(m[quiz.bestKey], score); }
+  m[quiz.comboKey] = Math.max(m[quiz.comboKey], maxCombo);
   m[wk] = quiz.books.map(b => b.name).filter(n => (m[wk].includes(n) && !removeWrong.includes(n)) || addWrong.includes(n));
-  queue(quiz.xp
-    ? { quiz: quiz.key, xp, plays: final ? 1 : 0, score: final && !retryMode ? score : 0, combo: maxCombo, addWrong, removeWrong }
-    : { quiz: quiz.key, addWrong, removeWrong });
+  queue({ quiz: quiz.key, xp, plays: final ? 1 : 0, score: final && !retryMode ? score : 0, combo: maxCombo, addWrong, removeWrong });
   savedXp = score; savedWrong = [...roundWrong]; savedFixed = fixed;
   flush();
 }
@@ -941,33 +937,34 @@ function finish() {
   $("bar").style.width = "100%";
   const m = local.me, total = deck.length, rate = right / total;
   const stars = rate === 1 ? 3 : rate >= .7 ? 2 : rate >= .4 ? 1 : 0;
-  const beforeLv = levelOfD(startXp);
-  const newRec = quiz.xp && ((!retryMode && score > startBest) || maxCombo > startCombo);
+  const isDavid = quiz === QUIZZES.review, lvOf = isDavid ? levelOf : levelOfD;
+  const beforeLv = lvOf(startXp);
+  const newRec = (!retryMode && score > startBest) || maxCombo > startCombo;
   checkpoint(true);
   persist();
 
-  const afterLv = levelOfD(m.dxp), wk = quiz.wrongKey;
+  const afterLv = lvOf(m[quiz.xpKey]), wk = quiz.wrongKey;
   [...$("stars").children].forEach((s, i) => { s.className = i < stars ? "lit" : ""; s.style.animationDelay = (i * .2) + "s"; });
   $("endTitle").textContent = stars === 3 ? "완벽해요!" : stars === 2 ? "아주 잘했어요!" : stars === 1 ? "좋아요, 조금만 더!" : "다시 해 보자!";
-  $("endSub").textContent = !quiz.xp ? (retryMode ? "틀린 카드 복습 완료 (경험치 없음)" : "창세기~아가 22권 복습 완료 (경험치 없음)")
+  $("endSub").textContent = isDavid ? (retryMode ? "틀린 카드 복습 완료 · 다윗 경험치" : "창세기~아가 22권 복습 완료 · 다윗 경험치")
     : retryMode ? "틀린 카드 다시 풀기 완료" : "이사야~말라기 17권 도전 완료";
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    $("luAvatar").innerHTML = daniel(afterLv);
-    $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
-    $("luItem").textContent = "새 탈것 획득: " + DTIERS[afterLv - 1].item;
+    $("luAvatar").innerHTML = isDavid ? david(afterLv, m.name) : daniel(afterLv);
+    $("luTitle").innerHTML = ic("arrowUp") + (isDavid ? " 다윗 레벨 업! Lv." : " 레벨 업! Lv.") + afterLv;
+    $("luItem").textContent = isDavid ? "새 장비 획득: " + TIERS[afterLv - 1].item : "새 탈것 획득: " + DTIERS[afterLv - 1].item;
   }
-  $("rScoreLabel").textContent = quiz.xp ? "얻은 XP" : "복습";
-  $("rScore").textContent = quiz.xp ? "+" + score : "0 XP";
+  $("rScoreLabel").textContent = isDavid ? "다윗 XP" : "얻은 XP";
+  $("rScore").textContent = "+" + score;
   $("rRight").textContent = right + "/" + total;
   $("rCombo").textContent = maxCombo;
   const wl = quiz.books.filter(b => roundWrong.includes(b.name));
   $("wrongBox").classList.toggle("hidden", !wl.length);
   $("wrongList").innerHTML = wl.map(b => "<span><small>" + b.cho + "</small>" + b.name + "</span>").join("");
   $("retryEndBtn").classList.toggle("hidden", !m[wk].length);
-  $("retryEndBtn").innerHTML = ic("retry") + (quiz.xp ? "틀린 카드 다시 풀기 (" : "틀린 카드 복습 (") + m[wk].length + ")";
-  $("againBtn").innerHTML = ic("play") + (quiz.xp ? "17권 다시 도전" : "22권 다시 복습");
+  $("retryEndBtn").innerHTML = ic("retry") + (isDavid ? "틀린 카드 복습 (" : "틀린 카드 다시 풀기 (") + m[wk].length + ")";
+  $("againBtn").innerHTML = ic("play") + (isDavid ? "22권 다시 복습" : "17권 다시 도전");
   show("end");
   if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
   else if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
