@@ -55,7 +55,18 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .hero h1{font-size:32px;margin:8px 0 2px;letter-spacing:-1px;text-shadow:0 3px 0 #0003}
 .hero p{margin:0;font-weight:700;opacity:.85}
 
-.me{display:flex;gap:12px;align-items:center}
+.me{display:block}
+.chars{display:flex;justify-content:center;align-items:flex-end;gap:4px;margin-bottom:6px}
+.chars .main{width:150px;height:168px;background:radial-gradient(circle at 50% 62%,#efe9ff,#ffffff00 70%)}
+.chars .side{width:92px;text-align:center}
+.chars .side div{height:106px}
+.chars small{display:block;font-size:11px;font-weight:800;color:var(--muted);line-height:1.3}
+.review{margin-top:16px;background:#ffffff1f;border-radius:20px;padding:14px}
+.review h3{color:#fff;margin:0 0 2px;font-size:17px;display:flex;align-items:center;gap:6px}
+.review p{color:#fff;opacity:.85;margin:0 0 12px;font-size:13px;font-weight:700}
+.review .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-sm{font-size:15px;padding:13px 8px;border-radius:16px}
+.frow .mini.mini2{width:40px;height:46px;opacity:.9}
 .me .avatar{flex:none;width:118px;height:138px;background:radial-gradient(circle at 50% 60%,#efe9ff,#ffffff00 70%);border-radius:20px}
 .me .info{flex:1;min-width:0}
 .mename{display:flex;align-items:center;justify-content:space-between;gap:6px}
@@ -172,7 +183,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 
 <!-- 이름 입력 -->
 <section id="nameScreen" class="hidden">
-  <div class="top"><span class="pill"><i data-ic="book"></i>창세기 ~ 아가 22권</span></div>
+  <div class="top"><span class="pill"><i data-ic="book"></i>이사야 ~ 말라기 17권</span></div>
   <header class="hero">
     <div class="logo"><i data-ic="church"></i></div>
     <div class="church">속초교회 아동부</div>
@@ -182,7 +193,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     <label for="nameInput">내 이름을 써 주세요</label>
     <input id="nameInput" maxlength="10" autocomplete="off" placeholder="예: 김하늘">
     <div class="err" id="nameErr" style="margin-bottom:8px"></div>
-    <button class="btn btn-gold" id="nameOk"><i data-ic="shield"></i>내 다윗 만나러 가기</button>
+    <button class="btn btn-gold" id="nameOk"><i data-ic="shield"></i>내 다니엘 만나러 가기</button>
     <button class="btn btn-plain hidden" id="nameCancel" style="margin-top:12px;font-size:16px">취소</button>
   </div>
   <div class="pick hidden" id="pickBox">
@@ -194,7 +205,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 <!-- 홈 -->
 <section id="home" class="hidden">
   <div class="top">
-    <span class="pill"><i data-ic="book"></i>창세기 ~ 아가 22권</span>
+    <span class="pill"><i data-ic="book"></i>이사야 ~ 말라기 17권</span>
     <button class="pill" id="soundBtn">소리</button>
   </div>
   <header class="hero">
@@ -206,7 +217,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 
   <div class="panel">
     <div class="me">
-      <div class="avatar" id="myAvatar"></div>
+      <div class="chars" id="myChars"></div>
       <div class="info">
         <div class="mename"><b id="myName"></b><button class="swap" id="swapBtn">이름 바꾸기</button></div>
         <div class="lvline"><span id="myLv">Lv.1</span><em id="myTitle" style="font-style:normal"></em></div>
@@ -223,12 +234,21 @@ button{cursor:pointer;border:0;touch-action:manipulation}
   </div>
 
   <div class="stack" style="margin-top:18px">
-    <button class="btn btn-gold" id="startBtn"><i data-ic="play"></i>22권 카드 도전!</button>
+    <button class="btn btn-gold" id="startBtn"><i data-ic="play"></i>17권 카드 도전!</button>
     <button class="btn btn-blue" id="retryHomeBtn"><i data-ic="retry"></i>틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
   </div>
 
+  <div class="review">
+    <h3><i data-ic="book"></i>복습: 창세기 ~ 아가 22권</h3>
+    <p>예전 문제를 다시 풀어요. 복습은 경험치가 쌓이지 않아요.</p>
+    <div class="row2">
+      <button class="btn btn-plain btn-sm" id="reviewBtn">22권 복습</button>
+      <button class="btn btn-plain btn-sm" id="reviewRetryBtn">틀린 카드 복습</button>
+    </div>
+  </div>
+
   <div class="friends">
-    <h2><span class="ttl"><i data-ic="shield"></i>우리 아동부 다윗들</span> <button class="pill" id="refreshBtn"><i data-ic="refresh"></i>새로고침</button></h2>
+    <h2><span class="ttl"><i data-ic="shield"></i>우리 아동부 다니엘들</span> <button class="pill" id="refreshBtn"><i data-ic="refresh"></i>새로고침</button></h2>
     <div class="flist" id="friendList"></div>
   </div>
 </section>
@@ -240,7 +260,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     <span class="pill" id="modeTag"></span>
   </div>
   <div class="progress"><i id="bar"></i></div>
-  <div class="counter" id="counter">1 / 22</div>
+  <div class="counter" id="counter">1 / 17</div>
   <div class="combo" id="combo"></div>
   <div class="scene">
     <div class="flip" id="card">
@@ -282,7 +302,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
       <div><b id="luTitle">레벨 업!</b><span id="luItem"></span></div>
     </div>
     <div class="rgrid">
-      <div class="chip">얻은 XP<b id="rScore">0</b></div>
+      <div class="chip"><span id="rScoreLabel">얻은 XP</span><b id="rScore">0</b></div>
       <div class="chip">맞힌 카드<b id="rRight">0</b></div>
       <div class="chip">최고 콤보<b id="rCombo">0</b></div>
     </div>
@@ -292,7 +312,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     </div>
     <div class="stack" style="margin-top:14px">
       <button class="btn btn-blue" id="retryEndBtn">틀린 카드 다시 풀기</button>
-      <button class="btn btn-gold" id="againBtn"><i data-ic="play"></i>22권 다시 도전</button>
+      <button class="btn btn-gold" id="againBtn"><i data-ic="play"></i>다시 도전</button>
       <button class="btn btn-plain" id="homeBtn"><i data-ic="home"></i>처음 화면</button>
     </div>
   </div>
@@ -302,7 +322,7 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 <div class="modal hidden" id="quitModal">
   <div class="box">
     <h3>그만할까요?</h3>
-    <p>지금까지 푼 만큼 경험치가 저장돼요.</p>
+    <p id="quitMsg">지금까지 푼 만큼 경험치가 저장돼요.</p>
     <div class="row">
       <button class="btn btn-plain" id="stayBtn">계속하기</button>
       <button class="btn btn-no" id="leaveBtn" style="font-size:17px">그만하기</button>
@@ -357,7 +377,7 @@ const medal = (i) => {
 };
 document.querySelectorAll("[data-ic]").forEach(e => { e.outerHTML = e.dataset.ic === "church" ? CHURCH : ic(e.dataset.ic); });
 
-/* ---------- 성경 22권 ---------- */
+/* ---------- 성경: 창세기~아가 22권 (복습) ---------- */
 const BOOKS = [
   ["창세기",  ["하나님이 엿새 동안 세상을 만드셨어요", "노아의 방주와 무지개 약속"]],
   ["출애굽기",["모세가 지팡이를 들자 바다가 갈라졌어요", "이집트를 탈출하고 십계명을 받았어요"]],
@@ -384,8 +404,33 @@ const BOOKS = [
 ];
 const CHO = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 const chosung = s => [...s].map(ch => { const c = ch.charCodeAt(0) - 0xAC00; return c >= 0 && c < 11172 ? CHO[Math.floor(c / 588)] : ch; }).join("");
-const books = BOOKS.map(([name, hints], i) => ({ name, hints, no: i + 1, cho: chosung(name) }));
-const twins = b => books.filter(x => x.cho === b.cho && x.name !== b.name);
+/* ---------- 성경: 이사야~말라기 17권 (지금 도전) ---------- */
+const PROPHETS = [
+  ["이사야",      ["임마누엘 아기가 태어날 것을 예언했어요", "독수리가 날개 치며 올라가듯 새 힘을 얻는다고 했어요 (66장)"]],
+  ["예레미야",    ["눈물을 많이 흘린 '눈물의 선지자'", "토기장이 집에서 진흙 그릇을 보며 말씀을 받았어요"]],
+  ["예레미야애가", ["무너진 예루살렘을 보며 슬피 부른 노래", "그래도 하나님의 사랑은 아침마다 새롭다고 고백했어요"]],
+  ["에스겔",      ["마른 뼈들이 다시 살아나는 환상", "하늘의 바퀴와 네 생물 환상을 본 제사장"]],
+  ["다니엘",      ["사자 굴에서도 하나님이 지켜 주셨어요", "풀무불 속의 세 친구 사드락, 메삭, 아벳느고"]],
+  ["호세아",      ["떠나간 아내 고멜을 끝까지 사랑했어요", "작은 선지서 12권 중 첫 번째 책"]],
+  ["요엘",        ["메뚜기 떼가 온 땅을 덮었어요", "하나님의 영을 모든 사람에게 부어 주신다고 했어요"]],
+  ["아모스",      ["양을 치고 뽕나무를 기르던 목자 선지자", "정의가 물처럼 흐르게 하라고 외쳤어요"]],
+  ["오바댜",      ["구약에서 가장 짧은 책, 딱 1장!", "에돔 나라가 벌 받을 것을 말했어요"]],
+  ["요나",        ["큰 물고기 뱃속에서 3일 동안 있었어요", "니느웨로 가라는 말씀을 피해 배를 타고 도망갔어요"]],
+  ["미가",        ["베들레헴에서 다스릴 왕이 나온다고 예언했어요", "정의를 행하고 겸손히 하나님과 함께 걸으라고 했어요"]],
+  ["나훔",        ["니느웨 성이 무너질 것을 예언했어요", "요나 때 회개했던 니느웨가 다시 나빠졌어요"]],
+  ["하박국",      ["\"의인은 믿음으로 말미암아 살리라\"", "무화과나무에 열매가 없어도 하나님 때문에 기뻐해요"]],
+  ["스바냐",      ["'여호와의 날'이 온다고 외쳤어요", "하나님이 우리 때문에 기뻐하며 노래하신대요"]],
+  ["학개",        ["포로에서 돌아온 백성에게 성전을 다시 지으라고 했어요", "2장짜리 짧은 책, 다리오 왕 때 선지자"]],
+  ["스가랴",      ["나귀를 타고 오실 겸손한 왕을 예언했어요", "밤에 말, 등잔대 같은 여러 환상을 보았어요"]],
+  ["말라기",      ["구약 성경의 맨 마지막 책", "온전한 십일조를 창고에 들이라고 했어요"]]
+];
+const mkBooks = (list, start) => list.map(([name, hints], i) => ({ name, hints, no: start + i, cho: chosung(name) }));
+const QUIZZES = {
+  main:   { key: "prophets", books: mkBooks(PROPHETS, 23), label: "17권", xp: true,  wrongKey: "dwrong" },
+  review: { key: "old",      books: mkBooks(BOOKS, 1),     label: "22권 복습", xp: false, wrongKey: "wrong" }
+};
+let quiz = QUIZZES.main;
+const twins = b => quiz.books.filter(x => x.cho === b.cho && x.name !== b.name);
 
 /* ---------- 다윗 레벨과 장비 ---------- */
 const NEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200,
@@ -518,6 +563,129 @@ function david(level, name) {
   return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
 }
 
+
+/* ---------- 다니엘과 탈것 (Lv.1~10) ---------- */
+const DNEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
+const DTIERS = [
+  { title: "걸어가는 다니엘",   item: "튼튼한 샌들" },
+  { title: "당나귀 탄 다니엘",  item: "당나귀", ride: "donkey" },
+  { title: "낙타 탄 다니엘",    item: "낙타", ride: "camel" },
+  { title: "말 탄 다니엘",      item: "갈색 말", ride: "horse" },
+  { title: "백마 탄 다니엘",    item: "백마", ride: "white" },
+  { title: "전투마 탄 다니엘",  item: "갑옷 입은 말", ride: "war" },
+  { title: "코끼리 탄 다니엘",  item: "코끼리", ride: "elephant" },
+  { title: "사자 탄 다니엘",    item: "사자", ride: "lion" },
+  { title: "황금 사자 탄 다니엘", item: "황금 갈기 사자", ride: "gold" },
+  { title: "날개 사자 탄 다니엘", item: "독수리 날개 사자", ride: "winged", glow: 1 }
+];
+const levelOfD = xp => { let l = 1; while (l < DNEED.length && xp >= DNEED[l]) l++; return l; };
+const ROBE = "#6d4fd8", ROBE_D = "#4c32b0", TRIM = "#ffd54a", SKIN = "#ffd3ad";
+function danielHead() {
+  return `<rect x="55" y="54" width="10" height="9" fill="${SKIN}"/><circle cx="60" cy="42" r="19" fill="${SKIN}"/>`
+    + '<circle cx="42" cy="43" r="4.5" fill="#4a2c17"/><circle cx="78" cy="43" r="4.5" fill="#4a2c17"/>'
+    + '<circle cx="53" cy="44" r="2.5" fill="#2b2350"/><circle cx="67" cy="44" r="2.5" fill="#2b2350"/><circle cx="49" cy="50" r="3" fill="#ff9fae" opacity=".7"/><circle cx="71" cy="50" r="3" fill="#ff9fae" opacity=".7"/><path d="M54 51 Q60 56 66 51" fill="none" stroke="#2b2350" stroke-width="2" stroke-linecap="round"/>'
+    + '<path d="M40 40 Q38 15 60 14 Q82 15 80 40 Q74 29 60 29 Q46 29 40 40 Z" fill="#fff" stroke="#c9d3e0" stroke-width="1.5"/>'
+    + '<path d="M43 31 Q60 22 77 31 M46 24 Q60 17 74 24" fill="none" stroke="#c9d3e0" stroke-width="1.5"/><circle cx="60" cy="26" r="3.2" fill="#3b82f6" stroke="#1d4ed8"/>';
+}
+function danielStanding() {
+  return `<path d="M44 62 Q60 58 76 62 L84 120 Q60 126 36 120 Z" fill="${ROBE}"/>`
+    + `<path d="M36 120 Q60 126 84 120" fill="none" stroke="${TRIM}" stroke-width="3"/><path d="M54 61 L60 73 L66 61 Z" fill="#fff"/>`
+    + `<rect x="41" y="86" width="38" height="6" rx="2" fill="${TRIM}"/>`
+    + `<path d="M46 66 L38 92 M74 66 L82 92" stroke="${ROBE}" stroke-width="9" stroke-linecap="round"/>`
+    + `<circle cx="37" cy="95" r="5" fill="${SKIN}"/><circle cx="83" cy="95" r="5" fill="${SKIN}"/>`
+    + '<ellipse cx="51" cy="125" rx="7" ry="3.5" fill="#7a4a24"/><ellipse cx="69" cy="125" rx="7" ry="3.5" fill="#7a4a24"/>'
+    + danielHead();
+}
+function danielRider() {
+  return `<path d="M54 94 L45 116 M66 94 L75 116" stroke="${ROBE}" stroke-width="10" stroke-linecap="round"/>`
+    + '<ellipse cx="43" cy="119" rx="6" ry="3.5" fill="#7a4a24"/><ellipse cx="77" cy="119" rx="6" ry="3.5" fill="#7a4a24"/>'
+    + `<path d="M44 62 Q60 58 76 62 L80 98 Q60 102 40 98 Z" fill="${ROBE}"/><path d="M40 98 Q60 102 80 98" fill="none" stroke="${TRIM}" stroke-width="3"/>`
+    + `<path d="M54 61 L60 73 L66 61 Z" fill="#fff"/><rect x="42" y="84" width="36" height="5" rx="2" fill="${TRIM}"/>`
+    + `<path d="M47 66 L56 84 M73 66 L64 84" stroke="${ROBE}" stroke-width="9" stroke-linecap="round"/>`
+    + `<circle cx="57" cy="87" r="5" fill="${SKIN}"/><circle cx="63" cy="87" r="5" fill="${SKIN}"/>`
+    + danielHead();
+}
+function horseLike(o) {
+  const b = o.body, d = o.dark, ol = o.outline ? ` stroke="${o.outline}" stroke-width="1.5"` : "";
+  let g = `<path d="M30 86 Q16 96 20 116" fill="none" stroke="${d}" stroke-width="6" stroke-linecap="round"/>`;
+  for (const x of [34, 46, 72, 84]) g += `<rect x="${x}" y="96" width="8" height="34" rx="3" fill="${b}"${ol}/><rect x="${x - 1}" y="128" width="10" height="5" rx="2" fill="${d}"/>`;
+  g += `<ellipse cx="60" cy="92" rx="32" ry="16" fill="${b}"${ol}/>`;
+  if (o.armor) g += `<path d="M34 82 Q60 74 86 82 L86 104 Q60 110 34 104 Z" fill="${o.blanket}" stroke="${TRIM}" stroke-width="2.5"/><path d="M34 104 Q60 110 86 104" fill="none" stroke="${TRIM}" stroke-width="4" stroke-dasharray="2 4"/>`;
+  else g += `<path d="M46 78 Q60 74 74 78 L72 94 Q60 97 48 94 Z" fill="${o.blanket}"/>`;
+  g += `<rect x="49" y="73" width="22" height="7" rx="3" fill="${o.saddle || "#7a4a24"}"/>`;
+  g += `<path d="M80 84 L94 60 L106 66 L92 100 Z" fill="${b}"${ol}/>`;
+  g += `<path d="M93 58 Q84 70 80 86" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round"/>`;
+  g += `<ellipse cx="104" cy="68" rx="13" ry="8" transform="rotate(35 104 68)" fill="${b}"${ol}/>`;
+  if (o.muzzle) g += `<ellipse cx="109" cy="75" rx="5" ry="4" fill="${o.muzzle}"/>`;
+  g += o.longEars
+    ? `<path d="M94 59 L90 38 L99 56 Z M99 58 L101 37 L104 59 Z" fill="${b}"${ol}/><path d="M95 54 L92 43 M100 55 L101 43" stroke="${d}" stroke-width="1.5"/>`
+    : `<path d="M95 60 L96 49 L101 59 Z" fill="${b}"${ol}/>`;
+  if (o.armor) g += '<path d="M96 57 L113 72 L107 79 L93 65 Z" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><circle cx="103" cy="68" r="2" fill="#e53935"/>';
+  g += '<circle cx="101" cy="64" r="1.8" fill="#2b2350"/>';
+  g += '<path d="M107 74 Q92 80 78 84" fill="none" stroke="#7a4a24" stroke-width="1.5"/>';
+  return g;
+}
+function camel() {
+  const b = "#d6a565", d = "#9a6b36";
+  let g = `<path d="M28 82 Q22 92 25 104" fill="none" stroke="${d}" stroke-width="3" stroke-linecap="round"/>`;
+  for (const x of [33, 44, 70, 81]) g += `<rect x="${x}" y="88" width="6" height="42" rx="3" fill="${b}"/><rect x="${x - 1.5}" y="128" width="9" height="5" rx="2" fill="${d}"/>`;
+  g += `<ellipse cx="56" cy="84" rx="30" ry="13" fill="${b}"/><path d="M36 82 Q56 48 76 82 Z" fill="${b}"/>`;
+  g += `<path d="M78 82 Q98 86 100 58" fill="none" stroke="${b}" stroke-width="10" stroke-linecap="round"/>`;
+  g += `<ellipse cx="106" cy="56" rx="10" ry="6" fill="${b}"/><path d="M99 52 L100 46 L103 51 Z" fill="${b}"/><circle cx="104" cy="53" r="1.6" fill="#2b2350"/>`;
+  g += '<path d="M42 68 Q56 56 70 68 L70 76 Q56 68 42 76 Z" fill="#ef4444"/><path d="M44 76 V81 M50 73 V78 M62 73 V78 M68 76 V81" stroke="#ffd54a" stroke-width="2" stroke-linecap="round"/>';
+  return g;
+}
+function elephant() {
+  const b = "#9aa5b1", d = "#6b7785";
+  let g = `<path d="M24 86 Q18 96 20 106" fill="none" stroke="${d}" stroke-width="3" stroke-linecap="round"/>`;
+  for (const x of [28, 43, 64, 79]) g += `<rect x="${x}" y="98" width="13" height="34" rx="4" fill="${b}"/><path d="M${x + 3} 130 h2 M${x + 8} 130 h2" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`;
+  g += `<ellipse cx="56" cy="88" rx="34" ry="22" fill="${b}"/>`;
+  g += `<circle cx="94" cy="78" r="17" fill="${b}"/><ellipse cx="85" cy="81" rx="11" ry="15" fill="${d}"/>`;
+  g += `<path d="M106 84 Q115 100 106 118" fill="none" stroke="${b}" stroke-width="8" stroke-linecap="round"/><path d="M101 92 Q107 99 113 94" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  g += '<circle cx="99" cy="73" r="1.8" fill="#2b2350"/>';
+  g += `<path d="M32 70 Q56 58 80 70 L78 86 Q56 78 34 86 Z" fill="#dc2626" stroke="${TRIM}" stroke-width="2"/>`;
+  return g;
+}
+function lion(o) {
+  const b = o.body, m = o.mane;
+  let g = "";
+  if (o.wings) g += '<path d="M54 86 Q34 36 6 42 Q18 50 10 58 Q24 60 16 70 Q32 72 28 84 Z" fill="#fff" stroke="#c8a165" stroke-width="2" stroke-linejoin="round"/>'
+    + '<path d="M50 80 Q30 58 14 52 M48 84 Q30 70 18 66" fill="none" stroke="#e2c58f" stroke-width="1.5"/>'
+    + '<path d="M64 84 Q60 30 36 24 Q44 34 38 42 Q50 46 46 56 Q58 60 56 74 Z" fill="#fdf3dc" stroke="#c8a165" stroke-width="2" stroke-linejoin="round"/>';
+  g += `<path d="M30 92 Q14 88 16 72" fill="none" stroke="${b}" stroke-width="4" stroke-linecap="round"/><circle cx="16" cy="70" r="5" fill="${m}"/>`;
+  for (const x of [34, 46, 70, 82]) g += `<rect x="${x}" y="98" width="9" height="32" rx="3" fill="${b}"/><ellipse cx="${x + 4.5}" cy="130" rx="6" ry="3.5" fill="${b}"/>`;
+  g += `<ellipse cx="58" cy="94" rx="30" ry="14" fill="${b}"/>`;
+  g += `<path d="M46 80 Q58 76 70 80 L68 94 Q58 97 48 94 Z" fill="${o.blanket}"/><rect x="47" y="76" width="22" height="7" rx="3" fill="${TRIM}"/>`;
+  g += `<circle cx="93" cy="80" r="19" fill="${m}"/>`;
+  for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2; g += `<circle cx="${(93 + Math.cos(a) * 18).toFixed(1)}" cy="${(80 + Math.sin(a) * 18).toFixed(1)}" r="5" fill="${m}"/>`; }
+  g += `<circle cx="86" cy="70" r="4" fill="${b}"/><circle cx="101" cy="70" r="4" fill="${b}"/><circle cx="94" cy="82" r="12" fill="${b}"/>`;
+  g += '<circle cx="90" cy="80" r="1.8" fill="#2b2350"/><circle cx="98" cy="80" r="1.8" fill="#2b2350"/><path d="M92 85 L96 85 L94 88 Z" fill="#6b3f1f"/><path d="M91 90 Q94 92 97 90" fill="none" stroke="#6b3f1f" stroke-width="1.3" stroke-linecap="round"/>';
+  if (o.sparkle) g += '<g fill="#fff"><path d="M78 60 l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z"/><path d="M110 92 l1.2 2.8 2.8 1.2-2.8 1.2-1.2 2.8-1.2-2.8-2.8-1.2 2.8-1.2z"/><path d="M24 110 l1.2 2.8 2.8 1.2-2.8 1.2-1.2 2.8-1.2-2.8-2.8-1.2 2.8-1.2z"/></g>';
+  return g;
+}
+const MOUNTS = {
+  donkey:   { seat: [60, 77], svg: () => horseLike({ body: "#9ca3af", dark: "#4b5563", longEars: 1, muzzle: "#e5e7eb", blanket: "#ef4444" }) },
+  camel:    { seat: [56, 66], svg: camel },
+  horse:    { seat: [60, 77], svg: () => horseLike({ body: "#a0522d", dark: "#4a2511", blanket: "#2563eb" }) },
+  white:    { seat: [60, 77], svg: () => horseLike({ body: "#f8fafc", dark: "#94a3b8", outline: "#cbd5e1", blanket: "#3b82f6", saddle: TRIM }) },
+  war:      { seat: [60, 77], svg: () => horseLike({ body: "#5b3a29", dark: "#1f130b", armor: 1, blanket: "#b91c1c", saddle: TRIM }) },
+  elephant: { seat: [56, 68], svg: elephant },
+  lion:     { seat: [58, 80], svg: () => lion({ body: "#e0a84f", mane: "#a0522d", blanket: ROBE }) },
+  gold:     { seat: [58, 80], svg: () => lion({ body: "#f5c542", mane: "#e08a00", blanket: ROBE, sparkle: 1 }) },
+  winged:   { seat: [58, 80], svg: () => lion({ body: "#f5c542", mane: "#e08a00", blanket: ROBE, sparkle: 1, wings: 1 }) }
+};
+function daniel(level) {
+  const t = DTIERS[Math.min(level, DTIERS.length) - 1], O = [];
+  if (t.glow) O.push('<circle cx="60" cy="80" r="56" fill="#fff3a6" opacity=".6"/>');
+  if (!t.ride) O.push(danielStanding());
+  else {
+    const m = MOUNTS[t.ride];
+    O.push(m.svg());
+    O.push(`<g transform="translate(${m.seat[0] - 36} ${m.seat[1] - 57}) scale(.6)">${danielRider()}</g>`);
+  }
+  return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
+}
+
 /* ---------- 저장 & 동기화 ---------- */
 const LKEY = "chosung-bible-v3";
 let local = { name: "", me: null, pending: null, sound: true };
@@ -525,7 +693,9 @@ try { Object.assign(local, JSON.parse(localStorage.getItem(LKEY) || "{}")); } ca
 const persist = () => { try { localStorage.setItem(LKEY, JSON.stringify(local)); } catch (e) {} };
 const cleanName = n => String(n || "").normalize("NFC").replace(/\s+/g, " ").trim();
 const validName = n => /^[가-힣a-zA-Z0-9 ]{1,10}$/.test(n);
-const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [] });
+// xp·wrong 등은 다윗(창세기~아가) 기록, d로 시작하는 것은 다니엘(이사야~말라기) 기록
+const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [], dxp: 0, dbest: 0, dcombo: 0, dplays: 0, dwrong: [] });
+const norm = p => ({ ...blank(p && p.name), ...(p || {}) });
 let online = null, friends = null;
 
 async function api(path, body) {
@@ -534,6 +704,7 @@ async function api(path, body) {
   return r.json();
 }
 if (!Array.isArray(local.pending)) local.pending = [];
+if (local.me) local.me = norm(local.me);
 const sameName = (a, b) => cleanName(a).toLowerCase() === cleanName(b).toLowerCase();
 // 판마다 기록을 대기열에 넣고, 하나씩 서버로 보낸다 (오프라인이면 다음에 다시)
 let flushing = null;
@@ -544,7 +715,7 @@ function flush() {
       try {
         const r = await api("/player", p);
         local.pending.shift();
-        if (sameName(p.name, local.name) && !local.pending.some(x => sameName(x.name, local.name))) local.me = r.player;
+        if (sameName(p.name, local.name) && !local.pending.some(x => sameName(x.name, local.name))) local.me = norm(r.player);
         persist(); online = true;
       } catch (e) { online = false; return false; }
     }
@@ -578,45 +749,52 @@ async function chooseName(raw) {
   await flush();
   local.name = n;
   local.me = blank(n);
-  try { const r = await api("/player?name=" + encodeURIComponent(n)); local.me = r.player; online = true; }
+  try { const r = await api("/player?name=" + encodeURIComponent(n)); local.me = norm(r.player); online = true; }
   catch (e) { online = false; }
   persist();
-  $("nameOk").disabled = false; $("nameOk").innerHTML = ic("shield") + "내 다윗 만나러 가기";
+  $("nameOk").disabled = false; $("nameOk").innerHTML = ic("shield") + "내 다니엘 만나러 가기";
   renderHome();
 }
 
 /* 홈 */
 function renderMe() {
-  const m = local.me, lv = levelOf(m.xp), t = TIERS[lv - 1];
-  $("myAvatar").innerHTML = david(lv, m.name);
+  const m = local.me, lv = levelOfD(m.dxp), t = DTIERS[lv - 1];
+  let chars = `<div class="main">${daniel(lv)}</div>`;
+  if (m.xp > 0) { const dl = levelOf(m.xp); chars += `<div class="side"><div>${david(dl, m.name)}</div><small>다윗 Lv.${dl}<br>${TIERS[dl - 1].title}</small></div>`; }
+  $("myChars").innerHTML = chars;
   $("myName").textContent = m.name;
   $("myLv").textContent = "Lv." + lv;
   $("myTitle").textContent = t.title;
-  if (lv < NEED.length) {
-    const lo = NEED[lv - 1], hi = NEED[lv];
-    $("xpFill").style.width = ((m.xp - lo) / (hi - lo) * 100) + "%";
-    $("xpText").textContent = `${m.xp} XP · ${hi - m.xp} XP 더 모으면 ${TIERS[lv].item} 획득!`;
+  if (lv < DNEED.length) {
+    const lo = DNEED[lv - 1], hi = DNEED[lv];
+    $("xpFill").style.width = ((m.dxp - lo) / (hi - lo) * 100) + "%";
+    $("xpText").textContent = `${m.dxp} XP · ${hi - m.dxp} XP 더 모으면 ${DTIERS[lv].item} 획득!`;
   } else {
     $("xpFill").style.width = "100%";
-    $("xpText").textContent = `${m.xp} XP · 최고 레벨 달성!`;
+    $("xpText").textContent = `${m.dxp} XP · 최고 레벨 달성!`;
   }
   $("syncText").innerHTML = local.pending.length ? ic("cloudOff") + "인터넷 연결되면 기록을 올릴게요" : online === false ? ic("cloudOff") + "서버에 연결하지 못했어요" : "";
-  $("bestScore").textContent = m.best;
-  $("bestCombo").textContent = m.bestCombo;
-  $("plays").textContent = m.plays;
-  $("wrongCount").textContent = m.wrong.length;
-  $("retryHomeBtn").disabled = !m.wrong.length;
+  $("bestScore").textContent = m.dbest;
+  $("bestCombo").textContent = m.dcombo;
+  $("plays").textContent = m.dplays;
+  $("wrongCount").textContent = m.dwrong.length;
+  $("retryHomeBtn").disabled = !m.dwrong.length;
+  $("reviewRetryBtn").textContent = "틀린 카드 복습 (" + m.wrong.length + ")";
+  $("reviewRetryBtn").disabled = !m.wrong.length;
   $("soundBtn").innerHTML = ic(local.sound ? "volume" : "mute") + "소리";
 }
 function renderFriends() {
   const box = $("friendList");
   if (friends === null) { box.innerHTML = '<div class="fempty">' + ic("cloudOff") + '친구 목록을 불러오지 못했어요</div>'; return; }
-  const list = friends.map(f => f.name.toLowerCase() === local.name.toLowerCase() ? { ...f, xp: Math.max(f.xp, local.me.xp) } : f);
-  if (!list.some(f => f.name.toLowerCase() === local.name.toLowerCase())) list.push({ name: local.me.name, xp: local.me.xp });
-  list.sort((a, b) => b.xp - a.xp);
+  const mineName = f => f.name.toLowerCase() === local.name.toLowerCase();
+  const list = friends.map(f => ({ xp: 0, dxp: 0, ...f })).map(f => mineName(f) ? { ...f, xp: Math.max(f.xp, local.me.xp), dxp: Math.max(f.dxp, local.me.dxp) } : f);
+  if (!list.some(mineName)) list.push({ name: local.me.name, xp: local.me.xp, dxp: local.me.dxp });
+  list.sort((a, b) => b.dxp - a.dxp || b.xp - a.xp);
   box.innerHTML = list.map((f, i) => {
-    const lv = levelOf(f.xp), mine = f.name.toLowerCase() === local.name.toLowerCase();
-    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${david(lv, f.name)}</div><div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>Lv.${lv} ${TIERS[lv - 1].title}</small></div><div class="xp"><b>${f.xp}</b>XP</div></div>`;
+    const dl = levelOfD(f.dxp), mine = mineName(f), vl = f.xp > 0 ? levelOf(f.xp) : 0;
+    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${daniel(dl)}</div>`
+      + (vl ? `<div class="mini mini2">${david(vl, f.name)}</div>` : "")
+      + `<div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>다니엘 Lv.${dl}${vl ? " · 다윗 Lv." + vl : ""}</small></div><div class="xp"><b>${f.dxp}</b>XP</div></div>`;
   }).join("");
 }
 async function loadFriends() {
@@ -628,7 +806,7 @@ async function renderHome() {
   $("friendList").innerHTML = '<div class="fempty">' + ic("loader", "spin") + '친구들을 불러오는 중...</div>';
   // 다른 폰에서 쌓은 기록도 반영되도록, 보낼 게 없으면 내 기록을 서버에서 다시 받아온다
   if (await flush() && !local.pending.length && local.name) {
-    try { const r = await api("/player?name=" + encodeURIComponent(local.name)); if (r.exists) { local.me = r.player; persist(); } } catch (e) {}
+    try { const r = await api("/player?name=" + encodeURIComponent(local.name)); if (r.exists) { local.me = norm(r.player); persist(); } } catch (e) {}
   }
   await loadFriends();
   renderMe(); renderFriends();
@@ -655,17 +833,20 @@ let deck = [], idx = 0, score = 0, combo = 0, maxCombo = 0, right = 0, hintsUsed
 // 이번 판에서 이미 저장한 몫 (중간에 그만두거나 앱을 닫아도 푼 만큼은 저장)
 let savedXp = 0, savedWrong = [], savedFixed = [], startXp = 0, startBest = 0, startCombo = 0;
 
-function startGame(retry) {
+function startGame(retry, which) {
   retryMode = retry;
-  const pool = retry ? books.filter(b => local.me.wrong.includes(b.name)) : books;
+  quiz = QUIZZES[which || "main"];
+  const pool = retry ? quiz.books.filter(b => local.me[quiz.wrongKey].includes(b.name)) : quiz.books;
   if (!pool.length) return;
   deck = shuffle(pool); idx = 0; score = 0; combo = 0; maxCombo = 0; right = 0; roundWrong = []; roundFixed = [];
-  savedXp = 0; savedWrong = []; savedFixed = []; startXp = local.me.xp; startBest = local.me.best; startCombo = local.me.bestCombo;
+  savedXp = 0; savedWrong = []; savedFixed = []; startXp = local.me.dxp; startBest = local.me.dbest; startCombo = local.me.dcombo;
+  $("quitMsg").textContent = quiz.xp ? "지금까지 푼 만큼 경험치가 저장돼요." : "지금까지 푼 틀린 카드 기록이 저장돼요.";
   $("combo").textContent = "";
   updateScoreTag();
   show("game"); renderCard();
 }
-const updateScoreTag = () => $("modeTag").innerHTML = ic(retryMode ? "retry" : "star", retryMode ? "" : "f") + (retryMode ? "다시 풀기 · " : "") + score + " XP";
+const updateScoreTag = () => $("modeTag").innerHTML = !quiz.xp ? ic("book") + "복습 · 맞힌 카드 " + right
+  : ic(retryMode ? "retry" : "star", retryMode ? "" : "f") + (retryMode ? "다시 풀기 · " : "") + score + " XP";
 
 function renderCard() {
   const b = deck[idx];
@@ -716,9 +897,9 @@ function judge(ok) {
   if (ok) {
     combo++; right++; maxCombo = Math.max(maxCombo, combo);
     const pts = [10, 6, 3][hintsUsed] + (combo >= 3 ? 2 : 0);
-    score += pts;
+    if (quiz.xp) score += pts;
     if (retryMode) roundFixed.push(b.name);
-    floater("+" + pts + " XP"); sfx.ok();
+    floater(quiz.xp ? "+" + pts + " XP" : "정답!"); sfx.ok();
   } else {
     combo = 0;
     if (!roundWrong.includes(b.name)) roundWrong.push(b.name);
@@ -734,17 +915,23 @@ function judge(ok) {
 
 // 지금까지 푼 것 중 아직 저장하지 않은 몫을 내 기록에 반영하고 서버로 보낸다
 function checkpoint(final) {
-  const m = local.me;
-  const xp = score - savedXp;
+  const m = local.me, wk = quiz.wrongKey;
+  const xp = quiz.xp ? score - savedXp : 0;
   const fixed = roundFixed.filter(n => !roundWrong.includes(n));
   const addWrong = roundWrong.filter(n => !savedWrong.includes(n));
   const removeWrong = fixed.filter(n => !savedFixed.includes(n));
-  if (!final && !xp && !addWrong.length && !removeWrong.length && maxCombo <= m.bestCombo) return;
-  m.xp += xp;
-  if (final) { m.plays++; if (!retryMode) m.best = Math.max(m.best, score); }
-  m.bestCombo = Math.max(m.bestCombo, maxCombo);
-  m.wrong = books.map(b => b.name).filter(n => (m.wrong.includes(n) && !removeWrong.includes(n)) || addWrong.includes(n));
-  queue({ xp, plays: final ? 1 : 0, score: final && !retryMode ? score : 0, combo: maxCombo, addWrong, removeWrong });
+  const comboUp = quiz.xp && maxCombo > m.dcombo;
+  if (!final && !xp && !addWrong.length && !removeWrong.length && !comboUp) return;
+  if (!quiz.xp && !addWrong.length && !removeWrong.length) return;
+  if (quiz.xp) {
+    m.dxp += xp;
+    if (final) { m.dplays++; if (!retryMode) m.dbest = Math.max(m.dbest, score); }
+    m.dcombo = Math.max(m.dcombo, maxCombo);
+  }
+  m[wk] = quiz.books.map(b => b.name).filter(n => (m[wk].includes(n) && !removeWrong.includes(n)) || addWrong.includes(n));
+  queue(quiz.xp
+    ? { quiz: quiz.key, xp, plays: final ? 1 : 0, score: final && !retryMode ? score : 0, combo: maxCombo, addWrong, removeWrong }
+    : { quiz: quiz.key, addWrong, removeWrong });
   savedXp = score; savedWrong = [...roundWrong]; savedFixed = fixed;
   flush();
 }
@@ -754,30 +941,33 @@ function finish() {
   $("bar").style.width = "100%";
   const m = local.me, total = deck.length, rate = right / total;
   const stars = rate === 1 ? 3 : rate >= .7 ? 2 : rate >= .4 ? 1 : 0;
-  const beforeLv = levelOf(startXp);
-  const newRec = (!retryMode && score > startBest) || maxCombo > startCombo;
+  const beforeLv = levelOfD(startXp);
+  const newRec = quiz.xp && ((!retryMode && score > startBest) || maxCombo > startCombo);
   checkpoint(true);
+  persist();
 
-  const afterLv = levelOf(m.xp);
+  const afterLv = levelOfD(m.dxp), wk = quiz.wrongKey;
   [...$("stars").children].forEach((s, i) => { s.className = i < stars ? "lit" : ""; s.style.animationDelay = (i * .2) + "s"; });
   $("endTitle").textContent = stars === 3 ? "완벽해요!" : stars === 2 ? "아주 잘했어요!" : stars === 1 ? "좋아요, 조금만 더!" : "다시 해 보자!";
-  $("endSub").textContent = retryMode ? "틀린 카드 다시 풀기 완료" : "22권 카드 도전 완료";
+  $("endSub").textContent = !quiz.xp ? (retryMode ? "틀린 카드 복습 완료 (경험치 없음)" : "창세기~아가 22권 복습 완료 (경험치 없음)")
+    : retryMode ? "틀린 카드 다시 풀기 완료" : "이사야~말라기 17권 도전 완료";
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    $("luAvatar").innerHTML = david(afterLv, m.name);
+    $("luAvatar").innerHTML = daniel(afterLv);
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
-    $("luItem").textContent = "새 장비 획득: " + TIERS[afterLv - 1].item;
+    $("luItem").textContent = "새 탈것 획득: " + DTIERS[afterLv - 1].item;
   }
-  $("rScore").textContent = "+" + score;
+  $("rScoreLabel").textContent = quiz.xp ? "얻은 XP" : "복습";
+  $("rScore").textContent = quiz.xp ? "+" + score : "0 XP";
   $("rRight").textContent = right + "/" + total;
   $("rCombo").textContent = maxCombo;
-  const wl = books.filter(b => roundWrong.includes(b.name));
+  const wl = quiz.books.filter(b => roundWrong.includes(b.name));
   $("wrongBox").classList.toggle("hidden", !wl.length);
   $("wrongList").innerHTML = wl.map(b => "<span><small>" + b.cho + "</small>" + b.name + "</span>").join("");
-  $("retryEndBtn").classList.toggle("hidden", !m.wrong.length);
-  $("retryEndBtn").innerHTML = ic("retry") + "틀린 카드 다시 풀기 (" + m.wrong.length + ")";
-  persist();
+  $("retryEndBtn").classList.toggle("hidden", !m[wk].length);
+  $("retryEndBtn").innerHTML = ic("retry") + (quiz.xp ? "틀린 카드 다시 풀기 (" : "틀린 카드 복습 (") + m[wk].length + ")";
+  $("againBtn").innerHTML = ic("play") + (quiz.xp ? "17권 다시 도전" : "22권 다시 복습");
   show("end");
   if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
   else if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
@@ -804,10 +994,13 @@ $("pickList").onclick = e => { const n = e.target.dataset.n; if (n) { $("nameInp
 $("nameCancel").onclick = renderHome;
 $("swapBtn").onclick = () => openName(true);
 $("refreshBtn").onclick = renderHome;
-$("startBtn").onclick = () => startGame(false);
-$("againBtn").onclick = () => startGame(false);
-$("retryHomeBtn").onclick = () => startGame(true);
-$("retryEndBtn").onclick = () => startGame(true);
+const quizName = () => quiz === QUIZZES.review ? "review" : "main";
+$("startBtn").onclick = () => startGame(false, "main");
+$("retryHomeBtn").onclick = () => startGame(true, "main");
+$("reviewBtn").onclick = () => startGame(false, "review");
+$("reviewRetryBtn").onclick = () => startGame(true, "review");
+$("againBtn").onclick = () => startGame(false, quizName());
+$("retryEndBtn").onclick = () => startGame(true, quizName());
 $("homeBtn").onclick = renderHome;
 $("hintBtn").onclick = showHint;
 $("flipBtn").onclick = flipCard;
