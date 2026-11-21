@@ -608,7 +608,6 @@ const DTIERS = [
     .map(([id, ko]) => ({ title: ko + "와 다니엘", item: ko, ride: "winged", glow: 1, poke: id }))
 ];
 const POKE_ART = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-const POKE_MINI = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 const levelOfD = xp => { let l = 1; while (l < DNEED.length && xp >= DNEED[l]) l++; return l; };
 const ROBE = "#6d4fd8", ROBE_D = "#4c32b0", TRIM = "#ffd54a", SKIN = "#ffd3ad";
 function danielHead() {
@@ -714,17 +713,17 @@ function daniel(level) {
     O.push(m.svg());
     O.push(`<g transform="translate(${m.seat[0] - 36} ${m.seat[1] - 57}) scale(.6)">${danielRider()}</g>`);
   }
-  // 모은 포켓몬: 가장 최근 친구는 오른쪽 위에 크게, 앞서 모은 친구들은 그 왼쪽 위에 작게
+  // 모은 포켓몬: 캐릭터 주위를 둥글게 감싸며 한 마리씩 채워짐 (12시 방향부터 시계 방향, 가장 최근 친구는 금테)
   const got = DTIERS.slice(0, Math.min(level, DTIERS.length)).filter(x => x.poke).map(x => x.poke);
-  if (got.length) {
-    const last = got[got.length - 1], prev = got.slice(0, -1);
-    prev.forEach((id, i) => {
-      const x = 72 - (i % 5) * 14, y = -3 + Math.floor(i / 5) * 14;
-      O.push(`<image href="${POKE_MINI(id)}" x="${x}" y="${y}" width="20" height="20" style="image-rendering:pixelated"/>`);
-    });
-    O.push(`<circle cx="104" cy="15" r="14" fill="#fff" stroke="${TRIM}" stroke-width="2"/><image href="${POKE_ART(last)}" x="91" y="2" width="26" height="26"/>`);
-  }
-  return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
+  if (!got.length) return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
+  const slots = DTIERS.filter(x => x.poke).length, cx = 60, cy = 80, rx = 72, ry = 74;
+  got.forEach((id, i) => {
+    const ang = -Math.PI / 2 + i / slots * Math.PI * 2, last = i === got.length - 1;
+    const x = cx + Math.cos(ang) * rx, y = cy + Math.sin(ang) * ry, r = last ? 17 : 15;
+    O.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#fff" stroke="${last ? TRIM : "#e4dcff"}" stroke-width="${last ? 2.5 : 1.5}"/>`
+      + `<image href="${POKE_ART(id)}" x="${(x - r + 2).toFixed(1)}" y="${(y - r + 2).toFixed(1)}" width="${2 * r - 4}" height="${2 * r - 4}"/>`);
+  });
+  return `<svg viewBox="-32 -12 184 186" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
 }
 
 /* ---------- 저장 & 동기화 ---------- */
