@@ -566,7 +566,8 @@ function david(level, name) {
 
 
 /* ---------- 다니엘과 탈것 (Lv.1~10) ---------- */
-const DNEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
+const DNEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200,
+  4000, 4900, 5900, 7000, 8200, 9500, 10900, 12400, 14000, 15700];
 const DTIERS = [
   { title: "걸어가는 다니엘",   item: "튼튼한 샌들" },
   { title: "당나귀 탄 다니엘",  item: "당나귀", ride: "donkey" },
@@ -577,8 +578,14 @@ const DTIERS = [
   { title: "코끼리 탄 다니엘",  item: "코끼리", ride: "elephant" },
   { title: "사자 탄 다니엘",    item: "사자", ride: "lion" },
   { title: "황금 사자 탄 다니엘", item: "황금 갈기 사자", ride: "gold" },
-  { title: "날개 사자 탄 다니엘", item: "독수리 날개 사자", ride: "winged", glow: 1 }
+  { title: "날개 사자 탄 다니엘", item: "독수리 날개 사자", ride: "winged", glow: 1 },
+  // Lv.11~20: 탈것은 날개 사자로 고정, 레벨마다 포켓몬 친구가 한 마리씩 늘어남 (그림은 PokéAPI 공개 이미지)
+  ...[[1, "이상해씨"], [4, "파이리"], [7, "꼬부기"], [2, "이상해풀"], [5, "리자드"], [8, "어니부기"],
+      [3, "이상해꽃"], [6, "리자몽"], [9, "거북왕"], [25, "피카츄"]]
+    .map(([id, ko]) => ({ title: ko + "와 다니엘", item: ko, ride: "winged", glow: 1, poke: id }))
 ];
+const POKE_ART = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+const POKE_MINI = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 const levelOfD = xp => { let l = 1; while (l < DNEED.length && xp >= DNEED[l]) l++; return l; };
 const ROBE = "#6d4fd8", ROBE_D = "#4c32b0", TRIM = "#ffd54a", SKIN = "#ffd3ad";
 function danielHead() {
@@ -684,6 +691,16 @@ function daniel(level) {
     O.push(m.svg());
     O.push(`<g transform="translate(${m.seat[0] - 36} ${m.seat[1] - 57}) scale(.6)">${danielRider()}</g>`);
   }
+  // 모은 포켓몬: 가장 최근 친구는 오른쪽 위에 크게, 앞서 모은 친구들은 그 왼쪽 위에 작게
+  const got = DTIERS.slice(0, Math.min(level, DTIERS.length)).filter(x => x.poke).map(x => x.poke);
+  if (got.length) {
+    const last = got[got.length - 1], prev = got.slice(0, -1);
+    prev.forEach((id, i) => {
+      const x = 72 - (i % 5) * 14, y = -3 + Math.floor(i / 5) * 14;
+      O.push(`<image href="${POKE_MINI(id)}" x="${x}" y="${y}" width="20" height="20" style="image-rendering:pixelated"/>`);
+    });
+    O.push(`<circle cx="104" cy="15" r="14" fill="#fff" stroke="${TRIM}" stroke-width="2"/><image href="${POKE_ART(last)}" x="91" y="2" width="26" height="26"/>`);
+  }
   return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
 }
 
@@ -769,7 +786,7 @@ function renderMe() {
   if (lv < DNEED.length) {
     const lo = DNEED[lv - 1], hi = DNEED[lv];
     $("xpFill").style.width = ((m.dxp - lo) / (hi - lo) * 100) + "%";
-    $("xpText").textContent = `${m.dxp} XP · ${hi - m.dxp} XP 더 모으면 ${DTIERS[lv].item} 획득!`;
+    $("xpText").textContent = `${m.dxp} XP · ${hi - m.dxp} XP 더 모으면 ${DTIERS[lv].item} ${DTIERS[lv].poke ? "등장" : "획득"}!`;
   } else {
     $("xpFill").style.width = "100%";
     $("xpText").textContent = `${m.dxp} XP · 최고 레벨 달성!`;
@@ -953,7 +970,7 @@ function finish() {
   if (afterLv > beforeLv) {
     $("luAvatar").innerHTML = isDavid ? david(afterLv, m.name) : daniel(afterLv);
     $("luTitle").innerHTML = ic("arrowUp") + (isDavid ? " 다윗 레벨 업! Lv." : " 레벨 업! Lv.") + afterLv;
-    $("luItem").textContent = isDavid ? "새 장비 획득: " + TIERS[afterLv - 1].item : "새 탈것 획득: " + DTIERS[afterLv - 1].item;
+    $("luItem").textContent = isDavid ? "새 장비 획득: " + TIERS[afterLv - 1].item : (DTIERS[afterLv - 1].poke ? "새 포켓몬 친구: " : "새 탈것 획득: ") + DTIERS[afterLv - 1].item;
   }
   $("rScoreLabel").textContent = isDavid ? "다윗 XP" : "얻은 XP";
   $("rScore").textContent = "+" + score;
