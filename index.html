@@ -173,6 +173,22 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .modal p{margin:0 0 16px;color:var(--muted);font-weight:700}
 .modal .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal .btn{font-size:17px}
+.frow{cursor:pointer;transition:transform .08s}
+.frow:active{transform:scale(.98)}
+.charbox{max-width:380px!important;padding:18px 16px 16px!important;position:relative;animation:pop .3s}
+.charbox .x{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:#ece6ff;color:var(--muted);display:grid;place-items:center}
+.charbox h3{font-size:24px!important;margin-top:4px!important}
+.cview{display:grid;gap:12px;margin-top:10px}
+.cview .one{background:radial-gradient(circle at 50% 60%,#efe9ff,#ffffff00 72%);border-radius:20px}
+.cview .one .pic{width:min(260px,70vw);aspect-ratio:120/140;margin:0 auto}
+.cview .one.small .pic{width:min(170px,46vw)}
+.cview b{display:block;font-size:17px}
+.cview small{display:block;color:var(--sky2);font-weight:800;font-size:14px}
+.cview .xp{color:var(--muted);font-weight:800;font-size:13px}
+.cview .gear{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:6px}
+.cview .gear span{background:#f3efff;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:800;color:var(--muted)}
+@media (max-height:700px){.cview .one .pic{width:min(200px,55vw)}.cview .one.small .pic{width:min(130px,36vw)}}
+.charbox .scroll{max-height:72vh;overflow-y:auto}
 .confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:30;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -318,6 +334,13 @@ button{cursor:pointer;border:0;touch-action:manipulation}
   </div>
 </section>
 </main>
+
+<div class="modal hidden" id="charModal">
+  <div class="box charbox">
+    <button class="x" id="charClose" aria-label="닫기"><i data-ic="x"></i></button>
+    <div class="scroll"><h3 id="charName"></h3><div class="cview" id="charView"></div></div>
+  </div>
+</div>
 
 <div class="modal hidden" id="quitModal">
   <div class="box">
@@ -801,6 +824,19 @@ function renderMe() {
   $("reviewRetryBtn").disabled = !m.wrong.length;
   $("soundBtn").innerHTML = ic(local.sound ? "volume" : "mute") + "소리";
 }
+let shownFriends = [];
+// 순위표에서 누른 친구의 캐릭터를 크게 보여 주는 팝업
+function openChar(f) {
+  const dl = levelOfD(f.dxp || 0), vl = (f.xp || 0) > 0 ? levelOf(f.xp) : 0;
+  const pokes = DTIERS.slice(0, dl).filter(x => x.poke).map(x => x.item);
+  const gearOf = (tiers, lv, max) => tiers.slice(1, lv).map(x => x.item).slice(-max);
+  let h = `<div class="one"><div class="pic">${daniel(dl)}</div><b>다니엘 Lv.${dl}</b><small>${DTIERS[dl - 1].title}</small><div class="xp">${f.dxp || 0} XP</div>`
+    + (pokes.length ? `<div class="gear">${pokes.map(n => `<span>${esc(n)}</span>`).join("")}</div>` : "") + `</div>`;
+  if (vl) h += `<div class="one small"><div class="pic">${david(vl, f.name)}</div><b>다윗 Lv.${vl}</b><small>${TIERS[vl - 1].title}</small><div class="xp">${f.xp} XP</div></div>`;
+  $("charName").textContent = f.name;
+  $("charView").innerHTML = h;
+  $("charModal").classList.remove("hidden");
+}
 function renderFriends() {
   const box = $("friendList");
   if (friends === null) { box.innerHTML = '<div class="fempty">' + ic("cloudOff") + '친구 목록을 불러오지 못했어요</div>'; return; }
@@ -808,9 +844,10 @@ function renderFriends() {
   const list = friends.map(f => ({ xp: 0, dxp: 0, ...f })).map(f => mineName(f) ? { ...f, xp: Math.max(f.xp, local.me.xp), dxp: Math.max(f.dxp, local.me.dxp) } : f);
   if (!list.some(mineName)) list.push({ name: local.me.name, xp: local.me.xp, dxp: local.me.dxp });
   list.sort((a, b) => b.dxp - a.dxp || b.xp - a.xp);
+  shownFriends = list;
   box.innerHTML = list.map((f, i) => {
     const dl = levelOfD(f.dxp), mine = mineName(f), vl = f.xp > 0 ? levelOf(f.xp) : 0;
-    return `<div class="frow${mine ? " mine" : ""}"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${daniel(dl)}</div>`
+    return `<div class="frow${mine ? " mine" : ""}" data-i="${i}" role="button" tabindex="0"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${daniel(dl)}</div>`
       + (vl ? `<div class="mini mini2">${david(vl, f.name)}</div>` : "")
       + `<div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>다니엘 Lv.${dl}${vl ? " · 다윗 Lv." + vl : ""}</small></div><div class="xp"><b>${f.dxp}</b>XP</div></div>`;
   }).join("");
@@ -1008,6 +1045,10 @@ $("pickList").onclick = e => { const n = e.target.dataset.n; if (n) { $("nameInp
 $("nameCancel").onclick = renderHome;
 $("swapBtn").onclick = () => openName(true);
 $("refreshBtn").onclick = renderHome;
+$("friendList").onclick = e => { const r = e.target.closest(".frow"); if (r) openChar(shownFriends[+r.dataset.i]); };
+$("friendList").onkeydown = e => { const r = e.target.closest(".frow"); if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openChar(shownFriends[+r.dataset.i]); } };
+$("charClose").onclick = () => $("charModal").classList.add("hidden");
+$("charModal").onclick = e => { if (e.target.id === "charModal") $("charModal").classList.add("hidden"); };
 const quizName = () => quiz === QUIZZES.review ? "review" : "main";
 $("startBtn").onclick = () => startGame(false, "main");
 $("retryHomeBtn").onclick = () => startGame(true, "main");
