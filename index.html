@@ -217,7 +217,13 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .charhead{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:4px}
 .charhead .pic{width:70px;height:82px}
 .charhead div{text-align:left}
-.levelup .avatar img{width:100%;height:100%;object-fit:contain}
+.levelup{flex-direction:column;text-align:center!important;padding:12px!important}
+/* 한 판에 새로 얻은 포켓몬 모두 보여 주기 */
+.lupokes{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%}
+.lupokes .np{width:84px;background:#fffdf4;border-radius:16px;padding:4px 2px 6px;box-shadow:0 3px 0 #0001;animation:pop .5s backwards}
+.lupokes .np img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.lupokes .np span{display:block;font-size:13px;font-weight:900;color:#8a5a00}
+.lupokes.many .np{width:68px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -337,8 +343,8 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     <div id="endSub" style="font-weight:700;color:var(--muted)"></div>
     <div id="newRec" class="newrec hidden"><i data-ic="sparkle"></i>최고 기록!</div>
     <div class="levelup hidden" id="levelUp">
-      <div class="avatar" id="luAvatar"></div>
       <div><b id="luTitle">레벨 업!</b><span id="luItem"></span></div>
+      <div class="lupokes" id="luAvatar"></div>
     </div>
     <div class="rgrid">
       <div class="chip"><span id="rScoreLabel">얻은 XP</span><b id="rScore">0</b></div>
@@ -785,9 +791,11 @@ function finish() {
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    $("luAvatar").innerHTML = `<img src="${POKE_ART(POKES[afterLv - 1].id)}" alt="${POKES[afterLv - 1].ko}">`;
+    const got = POKES.slice(beforeLv, afterLv);
+    $("luAvatar").className = "lupokes" + (got.length > 3 ? " many" : "");
+    $("luAvatar").innerHTML = got.map((p, i) => `<div class="np" style="animation-delay:${i * .15}s"><img src="${POKE_ART(p.id)}" alt="${p.ko}"><span>${p.ko}</span></div>`).join("");
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
-    $("luItem").textContent = "도감에 새로 등록: " + POKES.slice(beforeLv, afterLv).map(p => p.ko).join(", ");
+    $("luItem").textContent = got.length > 1 ? "포켓몬 " + got.length + "마리가 도감에 새로 등록됐어요!" : "도감에 새로 등록됐어요!";
   }
   $("rScoreLabel").textContent = "얻은 XP";
   $("rScore").textContent = "+" + score;
