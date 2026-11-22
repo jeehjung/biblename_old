@@ -2,7 +2,7 @@
 // GET  /                   앱 화면 (저장소 루트의 index.html 을 함께 올려서 제공 → 깃허브가 막혀도 열림)
 // GET  /players            모든 친구의 요약 (xp 높은 순)
 // GET  /player?name=이름     한 명의 전체 기록
-// POST /player             { name, xp, plays, score, combo, addWrong:[], removeWrong:[] } 를 누적 반영
+// POST /player             { name, quiz:"all", xp, plays, score, combo, addWrong:[], removeWrong:[] } 를 누적 반영
 
 import APP_HTML from "./index.html";
 
@@ -12,6 +12,8 @@ const BOOKS = ["창세기","출애굽기","레위기","민수기","신명기","�
 // 다니엘(이사야~말라기): 지금 도전하는 문제 — dxp, dwrong 등 d로 시작하는 필드에 기록
 const PROPHETS = ["이사야","예레미야","예레미야애가","에스겔","다니엘","호세아","요엘","아모스","오바댜","요나",
   "미가","나훔","하박국","스바냐","학개","스가랴","말라기"];
+// 트레이너(창세기~말라기 39권 통합): txp, twrong 등 t로 시작하는 필드에 기록. 처음엔 예전 틀린 카드 목록을 합쳐서 시작
+const ALL = [...BOOKS, ...PROPHETS];
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -25,9 +27,16 @@ const json = (d, s = 200) => new Response(JSON.stringify(d), {
 const clean = n => String(n || "").normalize("NFC").replace(/\s+/g, " ").trim();
 const valid = n => /^[가-힣a-zA-Z0-9 ]{1,10}$/.test(n);
 const key = n => "p:" + n.toLowerCase();
-const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [], dxp: 0, dbest: 0, dcombo: 0, dplays: 0, dwrong: [], updated: 0 });
-const load = async (env, n) => { const p = await env.PLAYERS.get(key(n), "json"); return p ? { ...blank(n), ...p } : null; };
-const meta = p => ({ name: p.name, xp: p.xp, plays: p.plays, best: p.best, dxp: p.dxp, dplays: p.dplays });
+const blank = n => ({ name: n, xp: 0, best: 0, bestCombo: 0, plays: 0, wrong: [], dxp: 0, dbest: 0, dcombo: 0, dplays: 0, dwrong: [],
+  txp: 0, tbest: 0, tcombo: 0, tplays: 0, twrong: [], updated: 0 });
+const load = async (env, n) => {
+  const raw = await env.PLAYERS.get(key(n), "json");
+  if (!raw) return null;
+  const p = { ...blank(n), ...raw };
+  if (!Array.isArray(raw.twrong)) p.twrong = ALL.filter(b => p.wrong.includes(b) || p.dwrong.includes(b));
+  return p;
+};
+const meta = p => ({ name: p.name, txp: p.txp, tplays: p.tplays, xp: p.xp, plays: p.plays, best: p.best, dxp: p.dxp, dplays: p.dplays });
 const num = (v, max) => Math.max(0, Math.min(max, Math.floor(Number(v) || 0)));
 const pick = (a, list) => (Array.isArray(a) ? a : []).filter(b => list.includes(b));
 const nextWrong = (cur, add, remove, list) => { const set = new Set(cur.filter(w => !remove.includes(w))); add.forEach(w => set.add(w)); return list.filter(w => set.has(w)); };
@@ -42,10 +51,10 @@ export default {
         let cursor;
         do {
           const r = await env.PLAYERS.list({ prefix: "p:", cursor });
-          for (const k of r.keys) if (k.metadata) players.push({ dxp: 0, dplays: 0, ...k.metadata });
+          for (const k of r.keys) if (k.metadata) players.push({ txp: 0, tplays: 0, ...k.metadata });
           cursor = r.list_complete ? null : r.cursor;
         } while (cursor);
-        players.sort((a, b) => b.dxp - a.dxp || b.xp - a.xp || a.name.localeCompare(b.name, "ko"));
+        players.sort((a, b) => b.txp - a.txp || a.name.localeCompare(b.name, "ko"));
         return json({ players });
       }
 
@@ -61,7 +70,11 @@ export default {
         const n = clean(b.name);
         if (!valid(n)) return json({ error: "이름은 한글·영문·숫자 1~10자" }, 400);
         const p = (await load(env, n)) || blank(n);
-        if (b.quiz === "prophets") {
+        if (b.quiz === "all") {
+          p.txp += num(b.xp, 3000); p.tplays += num(b.plays, 20);
+          p.tbest = Math.max(p.tbest, num(b.score, 600)); p.tcombo = Math.max(p.tcombo, num(b.combo, 39));
+          p.twrong = nextWrong(p.twrong, pick(b.addWrong, ALL), pick(b.removeWrong, ALL), ALL);
+        } else if (b.quiz === "prophets") {
           p.dxp += num(b.xp, 3000); p.dplays += num(b.plays, 20);
           p.dbest = Math.max(p.dbest, num(b.score, 400)); p.dcombo = Math.max(p.dcombo, num(b.combo, 17));
           p.dwrong = nextWrong(p.dwrong, pick(b.addWrong, PROPHETS), pick(b.removeWrong, PROPHETS), PROPHETS);
