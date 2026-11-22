@@ -238,6 +238,45 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .np .f em{font-style:normal;font-size:10px;font-weight:900;color:#8a5a00}
 .np .f span{display:block;font-size:13px;font-weight:1000;color:#5a3d00;position:relative;z-index:1}
 .np.open .f{animation:burst .8s ease-out}
+/* 새 포켓몬 등장: 캡슐볼이 떨어져 흔들리다 펑! 터지며 카드가 나오고 뒤집힘 */
+.fx{position:fixed;inset:0;z-index:25;background:radial-gradient(circle at 50% 45%,#3b2690,#140b3a 70%);overflow:hidden;touch-action:manipulation}
+.fxflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5}
+.fxflash.on{animation:flash .55s ease-out}
+@keyframes flash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+.stage{position:absolute;inset:0}
+.stage .rays{position:absolute;left:50%;top:46%;width:170vmax;height:170vmax;margin:-85vmax 0 0 -85vmax;background:repeating-conic-gradient(#ffd54a55 0 8deg,transparent 8deg 22deg);border-radius:50%;opacity:0;transform:scale(.2);-webkit-mask:radial-gradient(circle,#000 10%,transparent 62%);mask:radial-gradient(circle,#000 10%,transparent 62%)}
+.s-pop .rays,.s-card .rays,.s-open .rays{opacity:1;transform:scale(1);transition:opacity .3s,transform .6s;animation:spin 9s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.stage .ball{position:absolute;left:50%;top:46%;width:130px;height:130px;margin:-65px 0 0 -65px;overflow:visible}
+.ball g{transform-box:fill-box;transform-origin:center;transition:transform .45s cubic-bezier(.2,1.4,.4,1),opacity .45s}
+.s-drop .ball{animation:drop .7s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes drop{from{transform:translateY(-75vh) rotate(-260deg) scale(.6)}}
+.s-shake .ball{animation:wob .32s ease-in-out 3}
+@keyframes wob{25%{transform:rotate(-20deg)}75%{transform:rotate(20deg)}}
+.s-shake .ball .btn{animation:blink .32s 3}
+@keyframes blink{50%{fill:#fff6b0}}
+.s-pop .ball .top,.s-card .ball .top,.s-open .ball .top{transform:translate(-30px,-90px) rotate(-40deg);opacity:0}
+.s-pop .ball .bot,.s-card .ball .bot,.s-open .ball .bot{transform:translate(30px,90px) rotate(30deg);opacity:0}
+.s-pop .ball .mid,.s-card .ball .mid,.s-open .ball .mid{opacity:0}
+.stage .spark{position:absolute;left:50%;top:46%;width:12px;height:12px;margin:-6px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:fly .9s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.stage .big{position:absolute;left:50%;top:46%;width:min(58vw,230px);height:min(82vw,326px);margin:calc(min(82vw,326px)/-2) 0 0 calc(min(58vw,230px)/-2);perspective:1000px;opacity:0}
+.s-card .big,.s-open .big{opacity:1;animation:emerge .7s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes emerge{from{transform:scale(.05) rotate(-25deg);opacity:0}}
+.big .in{transition-duration:.9s}
+.big .b,.big .f{border-radius:22px;border-width:5px}
+.big .b i{font-size:110px}
+.big .b small{font-size:16px;letter-spacing:4px}
+.big .f em{font-size:16px}
+.big .f span{font-size:30px;margin-top:4px}
+.fxtxt{position:absolute;left:0;right:0;top:calc(46% + min(41vw,163px) + 16px);text-align:center;color:#fff;font-weight:1000;font-size:24px;text-shadow:0 3px 0 #0006;opacity:0;transform:translateY(10px);transition:.4s}
+.s-open .fxtxt{opacity:1;transform:none}
+.fxtxt small{display:block;font-size:14px;color:var(--gold);letter-spacing:2px}
+.fxcount{position:absolute;top:18px;left:0;right:0;text-align:center;color:#fff;font-weight:900;opacity:.85}
+.fxhint{position:absolute;bottom:28px;left:0;right:0;text-align:center;color:#fff;font-weight:800;opacity:0;transition:opacity .4s}
+.fxhint.on{opacity:.75;animation:breathe 1.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
+.fxskip{position:absolute;top:12px;right:12px;background:#ffffff26;color:#fff;font-weight:800;border-radius:99px;padding:7px 13px;font-size:13px;z-index:6}
 @keyframes burst{0%{box-shadow:0 0 0 0 #fff}40%{box-shadow:0 0 40px 18px #fff6b0}100%{box-shadow:0 0 18px 4px #ffd54a,0 4px 0 #0003}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -378,6 +417,15 @@ button{cursor:pointer;border:0;touch-action:manipulation}
   </div>
 </section>
 </main>
+
+<!-- 새 포켓몬 등장 연출 (화면 전체) -->
+<div class="fx hidden" id="fx" aria-live="polite">
+  <div class="fxflash" id="fxFlash"></div>
+  <div class="stage" id="fxStage"></div>
+  <div class="fxcount" id="fxCount"></div>
+  <div class="fxhint" id="fxHint">화면을 누르면 다음</div>
+  <button class="fxskip" id="fxSkip">건너뛰기</button>
+</div>
 
 <div class="modal hidden" id="charModal">
   <div class="box charbox">
@@ -821,7 +869,7 @@ function finish() {
     $("luAvatar").innerHTML = got.map((p, i) => `<button class="np" style="animation-delay:${i * .12}s" aria-label="카드 뒤집기"><div class="in">`
       + `<div class="b"><i>?</i><small>NEW</small></div>`
       + `<div class="f"><em>No.${p.no}</em><img src="${POKE_ART(p.id)}" alt="${p.ko}"><span>${p.ko}</span></div></div></button>`).join("");
-    revealCards();
+    playReveal(got).then(() => $("luAvatar").querySelectorAll(".np").forEach(c => c.classList.add("open")));
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
     $("luItem").textContent = got.length > 1 ? "포켓몬 " + got.length + "마리가 도감에 새로 등록됐어요!" : "도감에 새로 등록됐어요!";
   }
@@ -839,12 +887,48 @@ function finish() {
   if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
   else if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
 }
-let revealTimers = [];
-function revealCards() {
-  revealTimers.forEach(clearTimeout); revealTimers = [];
-  const cards = [...$("luAvatar").querySelectorAll(".np")];
-  const open = c => { if (c.classList.contains("open")) return; c.classList.add("open"); tone([660, 880, 1320], .08, "sine"); };
-  cards.forEach((c, i) => { c.onclick = () => open(c); revealTimers.push(setTimeout(() => open(c), 1100 + i * 750)); });
+// 새 포켓몬 한 마리씩: 캡슐볼이 떨어져 → 흔들흔들 → 펑! 빛과 함께 카드가 튀어나와 → 뒤집히며 공개
+let fxSkip = false, fxNext = null;
+const fxWait = ms => new Promise(r => { if (fxSkip) return r(); const t = setTimeout(r, ms); fxNext = () => { clearTimeout(t); r(); }; });
+const BALL = `<svg class="ball" viewBox="0 0 120 120" aria-hidden="true">
+  <defs><linearGradient id="bt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9b7bff"/><stop offset="1" stop-color="#5a3cc8"/></linearGradient>
+  <linearGradient id="bb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#f0b400"/></linearGradient></defs>
+  <g class="top"><path d="M6 60a54 54 0 0 1 108 0z" fill="url(#bt)" stroke="#2b2350" stroke-width="5"/><ellipse cx="38" cy="30" rx="14" ry="8" fill="#fff" opacity=".35" transform="rotate(-30 38 30)"/></g>
+  <g class="bot"><path d="M6 60a54 54 0 0 0 108 0z" fill="url(#bb)" stroke="#2b2350" stroke-width="5"/></g>
+  <g class="mid"><rect x="4" y="55" width="112" height="10" fill="#2b2350"/><circle cx="60" cy="60" r="17" fill="#2b2350"/><circle class="btn" cx="60" cy="60" r="11" fill="#fff"/>
+  <path d="M60 52.5l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill="#ffd54a"/></g></svg>`;
+function sparks(n) {
+  const cs = ["#ffd54a", "#fff", "#7ef0c4", "#ff7eb6", "#4cc3ff", "#b388ff"];
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 260, sp = document.createElement("i");
+    sp.className = "spark"; sp.style.cssText = `--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d}px;--c:${cs[i % cs.length]};animation-delay:${Math.random() * .12}s`;
+    $("fxStage").appendChild(sp);
+  }
+}
+async function playReveal(list) {
+  fxSkip = false; $("fx").classList.remove("hidden");
+  for (let i = 0; i < list.length && !fxSkip; i++) {
+    const p = list[i], st = $("fxStage");
+    $("fxCount").textContent = list.length > 1 ? `새 포켓몬 ${i + 1} / ${list.length}` : "새 포켓몬!";
+    $("fxHint").classList.remove("on");
+    st.innerHTML = `<div class="rays"></div>${BALL}<div class="big np"><div class="in"><div class="b"><i>?</i><small>NEW</small></div>`
+      + `<div class="f"><em>No.${p.no}</em><img src="${POKE_ART(p.id)}" alt="${p.ko}"><span>${esc(p.ko)}</span></div></div></div>`
+      + `<div class="fxtxt"><small>도감 등록!</small>${esc(p.ko)}</div>`;
+    st.className = "stage s-drop"; tone([300, 420], .07, "sine");
+    await fxWait(750); if (fxSkip) break;
+    st.className = "stage s-shake"; tone([520], .05, "square"); setTimeout(() => tone([520], .05, "square"), 320); setTimeout(() => tone([520], .05, "square"), 640);
+    await fxWait(1050); if (fxSkip) break;
+    st.className = "stage s-pop"; $("fxFlash").classList.remove("on"); void $("fxFlash").offsetWidth; $("fxFlash").classList.add("on");
+    sparks(36); tone([200, 400, 800, 1600], .05, "sawtooth");
+    await fxWait(350); if (fxSkip) break;
+    st.className = "stage s-card";
+    await fxWait(900); if (fxSkip) break;
+    st.className = "stage s-open"; st.querySelector(".big").classList.add("open"); sfx.lvup();
+    await fxWait(900); if (fxSkip) break;
+    $("fxHint").classList.add("on");
+    await fxWait(4000);
+  }
+  $("fx").classList.add("hidden"); $("fxStage").innerHTML = "";
 }
 function confetti(n) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -877,6 +961,8 @@ $("retryHomeBtn").onclick = () => startGame(true);
 $("againBtn").onclick = () => startGame(false);
 $("retryEndBtn").onclick = () => startGame(true);
 $("homeBtn").onclick = renderHome;
+$("fx").onclick = e => { if (e.target.id !== "fxSkip" && fxNext) fxNext(); };
+$("fxSkip").onclick = () => { fxSkip = true; if (fxNext) fxNext(); };
 $("hintBtn").onclick = showHint;
 $("flipBtn").onclick = flipCard;
 $("okBtn").onclick = () => judge(true);
