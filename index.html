@@ -218,12 +218,27 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .charhead .pic{width:70px;height:82px}
 .charhead div{text-align:left}
 .levelup{flex-direction:column;text-align:center!important;padding:12px!important}
-/* 한 판에 새로 얻은 포켓몬 모두 보여 주기 */
-.lupokes{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%}
-.lupokes .np{width:84px;background:#fffdf4;border-radius:16px;padding:4px 2px 6px;box-shadow:0 3px 0 #0001;animation:pop .5s backwards}
-.lupokes .np img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
-.lupokes .np span{display:block;font-size:13px;font-weight:900;color:#8a5a00}
-.lupokes.many .np{width:68px}
+/* 한 판에 새로 얻은 포켓몬 모두: 카드 뒷면 → 뒤집히며 공개 */
+.lupokes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;margin-top:6px}
+.lupokes .np{width:86px;height:122px;perspective:600px;padding:0;background:none;animation:dealIn .45s backwards}
+.lupokes.many .np{width:70px;height:100px}
+@keyframes dealIn{from{opacity:0;transform:translateY(-30px) rotate(-8deg) scale(.7)}}
+.np .in{position:relative;width:100%;height:100%;transition:transform .8s cubic-bezier(.2,1.5,.4,1);transform-style:preserve-3d}
+.np.open .in{transform:rotateY(180deg)}
+.np .b,.np .f{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.np .b{background:linear-gradient(145deg,#2b1a6e,#6d4fd8 55%,#2b1a6e);border:3px solid var(--gold);box-shadow:0 0 0 2px #c58a00,0 4px 0 #0003;animation:charge 1s ease-in-out infinite}
+.np .b i{font-style:normal;font-size:40px;font-weight:1000;color:var(--gold);text-shadow:0 0 12px #ffd54a}
+.np .b small{font-size:10px;font-weight:900;color:#fff;letter-spacing:2px;opacity:.85}
+.np .b::after,.np .f::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,#ffffffb0 50%,transparent 60%);animation:shine 1.4s linear infinite}
+@keyframes charge{50%{box-shadow:0 0 0 2px #c58a00,0 0 22px 6px #ffd54acc;transform:scale(1.04)}}
+@keyframes shine{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
+.np .f{transform:rotateY(180deg);background:radial-gradient(circle at 50% 40%,#fffbe0,#ffd54a 75%,#e0a400);border:3px solid #fff;box-shadow:0 0 18px 4px #ffd54a,0 4px 0 #0003}
+.np .f::after{animation:shine 1.1s linear 1 .5s backwards;inset:-40%}
+.np .f img{width:86%;aspect-ratio:1;object-fit:contain;position:relative;z-index:1;filter:drop-shadow(0 3px 2px #0003)}
+.np .f em{font-style:normal;font-size:10px;font-weight:900;color:#8a5a00}
+.np .f span{display:block;font-size:13px;font-weight:1000;color:#5a3d00;position:relative;z-index:1}
+.np.open .f{animation:burst .8s ease-out}
+@keyframes burst{0%{box-shadow:0 0 0 0 #fff}40%{box-shadow:0 0 40px 18px #fff6b0}100%{box-shadow:0 0 18px 4px #ffd54a,0 4px 0 #0003}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -518,12 +533,21 @@ function trainer(level) {
   const glow = lv >= 11 ? '<circle cx="60" cy="80" r="56" fill="#fff3a6" opacity=".6"/>' : "";
   return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="트레이너 Lv.${lv}">${glow}${trainerBody()}</svg>`;
 }
-// 포켓몬 도감: 레벨마다 한 칸씩 등록, 아직 못 만난 포켓몬은 그림자로 보이고 몇 레벨에 오는지 알려 줌
-function dex(level) {
-  const lv = Math.max(1, Math.min(level, POKES.length));
-  return '<div class="dex">' + POKES.map((p, i) => i < lv
-    ? `<div class="dc got${i === lv - 1 ? " new" : ""}"><img src="${POKE_ART(p.id)}" alt="${p.ko}" loading="lazy"><b>No.${i + 1}</b><span>${p.ko}</span></div>`
-    : `<div class="dc"><img class="sil" src="${POKE_ART(p.id)}" alt="" loading="lazy"><b>No.${i + 1}</b><span>Lv.${i + 1}</span></div>`).join("") + "</div>";
+// 포켓몬이 나오는 순서는 이름마다 랜덤 (이름으로 정해져서 어느 폰에서 봐도 같은 순서)
+function pokeOrder(name) {
+  let h = 2166136261;
+  for (const c of cleanName(name).toLowerCase()) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const rnd = () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const a = POKES.map((_, i) => i);
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+// 포켓몬 도감: 도감 번호 순서로 20칸, 만난 포켓몬만 그림과 이름이 보이고 나머지는 그림자 + ???
+function dex(level, name) {
+  const lv = Math.max(1, Math.min(level, POKES.length)), order = pokeOrder(name), got = order.slice(0, lv), last = order[lv - 1];
+  return '<div class="dex">' + POKES.map((p, i) => got.includes(i)
+    ? `<div class="dc got${i === last ? " new" : ""}"><img src="${POKE_ART(p.id)}" alt="${p.ko}" loading="lazy"><b>No.${i + 1}</b><span>${p.ko}</span></div>`
+    : `<div class="dc"><img class="sil" src="${POKE_ART(p.id)}" alt="" loading="lazy"><b>No.${i + 1}</b><span>???</span></div>`).join("") + "</div>";
 }
 
 /* ---------- 저장 & 동기화 ---------- */
@@ -600,7 +624,7 @@ async function chooseName(raw) {
 function renderMe() {
   const m = local.me, lv = levelOf(m.txp);
   $("myChars").innerHTML = `<div class="main">${trainer(lv)}</div>`;
-  $("myDex").outerHTML = dex(lv).replace('<div class="dex">', '<div class="dex" id="myDex">');
+  $("myDex").outerHTML = dex(lv, m.name).replace('<div class="dex">', '<div class="dex" id="myDex">');
   $("dexCount").textContent = lv + " / " + POKES.length;
   $("myName").textContent = m.name + " 트레이너";
   $("myLv").textContent = "Lv." + lv;
@@ -608,7 +632,7 @@ function renderMe() {
   if (lv < NEED.length) {
     const lo = NEED[lv - 1], hi = NEED[lv];
     $("xpFill").style.width = ((m.txp - lo) / (hi - lo) * 100) + "%";
-    $("xpText").textContent = `${m.txp} XP · ${hi - m.txp} XP 더 모으면 도감에 ${POKES[lv].ko} 등록!`;
+    $("xpText").textContent = `${m.txp} XP · ${hi - m.txp} XP 더 모으면 새 포켓몬 등장!`;
   } else {
     $("xpFill").style.width = "100%";
     $("xpText").textContent = `${m.txp} XP · 최고 레벨 달성!`;
@@ -626,7 +650,7 @@ let shownFriends = [];
 function openChar(f) {
   const lv = levelOf(f.txp || 0);
   $("charName").textContent = f.name + " 트레이너의 도감";
-  $("charView").innerHTML = `<div class="charhead"><div class="pic">${trainer(lv)}</div><div><b>Lv.${lv}</b><small>${titleOf(lv)}</small><div class="xp">${f.txp || 0} XP</div></div></div>` + dex(lv);
+  $("charView").innerHTML = `<div class="charhead"><div class="pic">${trainer(lv)}</div><div><b>Lv.${lv}</b><small>${titleOf(lv)}</small><div class="xp">${f.txp || 0} XP</div></div></div>` + dex(lv, f.name);
   $("charModal").classList.remove("hidden");
 }
 // 순위 대신 친구 이름(가나다 순)만 보여 주고, 누르면 그 친구 도감을 연다
@@ -791,9 +815,13 @@ function finish() {
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    const got = POKES.slice(beforeLv, afterLv);
+    const got = pokeOrder(m.name).slice(beforeLv, afterLv).map(i => ({ ...POKES[i], no: i + 1 }));
     $("luAvatar").className = "lupokes" + (got.length > 3 ? " many" : "");
-    $("luAvatar").innerHTML = got.map((p, i) => `<div class="np" style="animation-delay:${i * .15}s"><img src="${POKE_ART(p.id)}" alt="${p.ko}"><span>${p.ko}</span></div>`).join("");
+    // 카드 뒷면으로 등장 → 반짝이다가 한 장씩 뒤집히며 포켓몬 공개 (누르면 바로 뒤집힘)
+    $("luAvatar").innerHTML = got.map((p, i) => `<button class="np" style="animation-delay:${i * .12}s" aria-label="카드 뒤집기"><div class="in">`
+      + `<div class="b"><i>?</i><small>NEW</small></div>`
+      + `<div class="f"><em>No.${p.no}</em><img src="${POKE_ART(p.id)}" alt="${p.ko}"><span>${p.ko}</span></div></div></button>`).join("");
+    revealCards();
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
     $("luItem").textContent = got.length > 1 ? "포켓몬 " + got.length + "마리가 도감에 새로 등록됐어요!" : "도감에 새로 등록됐어요!";
   }
@@ -810,6 +838,13 @@ function finish() {
   show("end");
   if (afterLv > beforeLv) { sfx.lvup(); confetti(90); }
   else if (stars >= 2) { sfx.win(); confetti(stars === 3 ? 90 : 40); }
+}
+let revealTimers = [];
+function revealCards() {
+  revealTimers.forEach(clearTimeout); revealTimers = [];
+  const cards = [...$("luAvatar").querySelectorAll(".np")];
+  const open = c => { if (c.classList.contains("open")) return; c.classList.add("open"); tone([660, 880, 1320], .08, "sine"); };
+  cards.forEach((c, i) => { c.onclick = () => open(c); revealTimers.push(setTimeout(() => open(c), 1100 + i * 750)); });
 }
 function confetti(n) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
