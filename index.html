@@ -588,9 +588,10 @@ function david(level, name) {
 }
 
 
-/* ---------- 다니엘과 탈것 (Lv.1~10) ---------- */
+/* ---------- 다니엘과 탈것 (Lv.1~10), 포켓몬 (Lv.11~30) ---------- */
 const DNEED = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200,
-  3400, 3600, 3800, 4000, 4200, 4400, 4600, 4750, 4900, 5000];
+  3400, 3600, 3800, 4000, 4200, 4400, 4600, 4750, 4900, 5000,
+  5300, 5600, 5900, 6200, 6500, 6800, 7100, 7400, 7700, 8000];
 const DTIERS = [
   { title: "걸어가는 다니엘",   item: "튼튼한 샌들" },
   { title: "당나귀 탄 다니엘",  item: "당나귀", ride: "donkey" },
@@ -604,8 +605,11 @@ const DTIERS = [
   { title: "날개 사자 탄 다니엘", item: "독수리 날개 사자", ride: "winged", glow: 1 },
   // Lv.11~20: 탈것은 날개 사자로 고정, 레벨마다 포켓몬 친구가 한 마리씩 늘어남 (그림은 PokéAPI 공개 이미지)
   ...[[1, "이상해씨"], [4, "파이리"], [7, "꼬부기"], [2, "이상해풀"], [5, "리자드"], [8, "어니부기"],
-      [3, "이상해꽃"], [6, "리자몽"], [9, "거북왕"], [25, "피카츄"]]
-    .map(([id, ko]) => ({ title: ko + "와 다니엘", item: ko, ride: "winged", glow: 1, poke: id }))
+      [3, "이상해꽃"], [6, "리자몽"], [9, "거북왕"], [25, "피카츄"],
+      // Lv.21~30: 전설의 포켓몬 (바깥쪽 고리)
+      [144, "프리져"], [145, "썬더"], [146, "파이어"], [249, "루기아"], [250, "칠색조"],
+      [383, "그란돈"], [382, "가이오가"], [384, "레쿠쟈"], [151, "뮤"], [150, "뮤츠"]]
+    .map(([id, ko]) => ({ title: ko + ((ko.charCodeAt(ko.length - 1) - 0xAC00) % 28 ? "과" : "와") + " 다니엘", item: ko, ride: "winged", glow: 1, poke: id }))
 ];
 const POKE_ART = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 const levelOfD = xp => { let l = 1; while (l < DNEED.length && xp >= DNEED[l]) l++; return l; };
@@ -716,14 +720,17 @@ function daniel(level) {
   // 모은 포켓몬: 캐릭터 주위를 둥글게 감싸며 한 마리씩 채워짐 (12시 방향부터 시계 방향, 가장 최근 친구는 금테)
   const got = DTIERS.slice(0, Math.min(level, DTIERS.length)).filter(x => x.poke).map(x => x.poke);
   if (!got.length) return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
-  const slots = DTIERS.filter(x => x.poke).length, cx = 60, cy = 80, rx = 72, ry = 74;
+  // 안쪽 고리: Lv.11~20 포켓몬 10마리, 바깥쪽 고리: Lv.21~30 전설의 포켓몬 10마리
+  const slots = 10, cx = 60, cy = 80, outer = got.length > slots;
   got.forEach((id, i) => {
-    const ang = -Math.PI / 2 + i / slots * Math.PI * 2, last = i === got.length - 1;
+    const ring = i < slots ? 0 : 1, j = i % slots, rx = ring ? 104 : 72, ry = ring ? 106 : 74;
+    const ang = -Math.PI / 2 + (j + ring * .5) / slots * Math.PI * 2, last = i === got.length - 1;
     const x = cx + Math.cos(ang) * rx, y = cy + Math.sin(ang) * ry, r = last ? 17 : 15;
     O.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#fff" stroke="${last ? TRIM : "#e4dcff"}" stroke-width="${last ? 2.5 : 1.5}"/>`
       + `<image href="${POKE_ART(id)}" x="${(x - r + 2).toFixed(1)}" y="${(y - r + 2).toFixed(1)}" width="${2 * r - 4}" height="${2 * r - 4}"/>`);
   });
-  return `<svg viewBox="-32 -12 184 186" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
+  const vb = outer ? "-63 -44 246 250" : "-32 -12 184 186";
+  return `<svg viewBox="${vb}" width="100%" height="100%" role="img" aria-label="${t.title}">${O.join("")}</svg>`;
 }
 
 /* ---------- 저장 & 동기화 ---------- */
