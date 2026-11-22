@@ -191,6 +191,33 @@ button{cursor:pointer;border:0;touch-action:manipulation}
 .charbox .scroll{max-height:72vh;overflow-y:auto}
 .confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:30;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+/* 포켓몬 도감 */
+.dexwrap{margin-top:22px}
+.dexwrap h2{color:#fff;font-size:20px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+.dexwrap h2 .ttl{display:flex;align-items:center;gap:8px}
+.dexwrap h2 small{font-size:14px;background:#ffffff2b;border-radius:99px;padding:3px 10px}
+.dex{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--card);border-radius:22px;padding:10px;box-shadow:0 6px 0 #0002}
+.dc{background:#f3efff;border-radius:14px;padding:6px 2px 7px;text-align:center;position:relative}
+.dc img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.dc img.sil{filter:brightness(0);opacity:.14}
+.dc b{display:block;font-size:10px;color:var(--muted);font-weight:900}
+.dc span{display:block;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc:not(.got) span{color:#b6abd8}
+.dc.got{background:linear-gradient(160deg,#fffdf4,#efe9ff)}
+.dc.new{outline:3px solid var(--gold)}
+.dc.new::after{content:"NEW";position:absolute;top:-7px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:900;border-radius:99px;padding:1px 6px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fbtn{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:16px;padding:6px 10px 6px 6px;box-shadow:0 4px 0 #0002;text-align:left;min-width:0}
+.fbtn:active{transform:scale(.97)}
+.fbtn .mini{width:38px;height:44px;flex:none}
+.fbtn b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbtn small{display:block;color:var(--sky2);font-weight:800;font-size:12px}
+.fbtn div{min-width:0}
+.charbox .dex{box-shadow:none;padding:4px;margin-top:8px}
+.charhead{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:4px}
+.charhead .pic{width:70px;height:82px}
+.charhead div{text-align:left}
+.levelup .avatar img{width:100%;height:100%;object-fit:contain}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -254,9 +281,14 @@ button{cursor:pointer;border:0;touch-action:manipulation}
     <button class="btn btn-blue" id="retryHomeBtn"><i data-ic="retry"></i>틀린 카드 다시 풀기<span class="badge" id="wrongCount">0</span></button>
   </div>
 
+  <div class="dexwrap">
+    <h2><span class="ttl"><i data-ic="book"></i>내 포켓몬 도감</span><small id="dexCount">0 / 20</small></h2>
+    <div class="dex" id="myDex"></div>
+  </div>
+
   <div class="friends">
-    <h2><span class="ttl"><i data-ic="shield"></i>우리 아동부 트레이너들</span> <button class="pill" id="refreshBtn"><i data-ic="refresh"></i>새로고침</button></h2>
-    <div class="flist" id="friendList"></div>
+    <h2><span class="ttl"><i data-ic="eye"></i>친구 도감 보기</span> <button class="pill" id="refreshBtn"><i data-ic="refresh"></i>새로고침</button></h2>
+    <div class="fgrid" id="friendList"></div>
   </div>
 </section>
 
@@ -452,7 +484,7 @@ const POKES = [[1, "이상해씨"], [4, "파이리"], [7, "꼬부기"], [2, "이
   [383, "그란돈"], [382, "가이오가"], [384, "레쿠쟈"], [151, "뮤"], [150, "뮤츠"]].map(([id, ko]) => ({ id, ko }));
 const POKE_ART = id => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 const levelOf = xp => { let l = 1; while (l < NEED.length && xp >= NEED[l]) l++; return l; };
-const titleOf = lv => "포켓몬 " + lv + "마리와 함께";
+const titleOf = lv => "도감 " + lv + " / " + POKES.length;
 const SKIN = "#ffd3ad", INK = "#2b2350", TRIM = "#ffd54a";
 // 오리지널 꼬마 트레이너: 주황 모자(별 무늬), 초록 후드, 노란 가방
 function trainerBody() {
@@ -476,20 +508,16 @@ function trainerBody() {
     + '<path d="M55.5 56q4.5 4 9 0" fill="none" stroke="' + INK + '" stroke-width="1.8" stroke-linecap="round"/>';
 }
 function trainer(level) {
-  const lv = Math.max(1, Math.min(level, POKES.length)), O = [];
-  if (lv >= 11) O.push('<circle cx="60" cy="80" r="56" fill="#fff3a6" opacity=".6"/>');
-  O.push(trainerBody());
-  // 모은 포켓몬: 캐릭터 주위를 둥글게 감싸며 한 마리씩 채워짐 (안쪽 고리 1~10, 바깥쪽 고리 11~20, 가장 최근 친구는 금테)
-  const got = POKES.slice(0, lv), slots = 10, cx = 60, cy = 80, outer = got.length > slots;
-  got.forEach((pk, i) => {
-    const ring = i < slots ? 0 : 1, j = i % slots, rx = ring ? 104 : 72, ry = ring ? 106 : 74;
-    const ang = -Math.PI / 2 + (j + ring * .5) / slots * Math.PI * 2, last = i === got.length - 1;
-    const x = cx + Math.cos(ang) * rx, y = cy + Math.sin(ang) * ry, r = last ? 17 : 15;
-    O.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#fff" stroke="${last ? TRIM : "#e4dcff"}" stroke-width="${last ? 2.5 : 1.5}"/>`
-      + `<image href="${POKE_ART(pk.id)}" x="${(x - r + 2).toFixed(1)}" y="${(y - r + 2).toFixed(1)}" width="${2 * r - 4}" height="${2 * r - 4}"/>`);
-  });
-  const vb = outer ? "-63 -44 246 250" : "-32 -12 184 186";
-  return `<svg viewBox="${vb}" width="100%" height="100%" role="img" aria-label="${titleOf(lv)}">${O.join("")}</svg>`;
+  const lv = Math.max(1, Math.min(level, POKES.length));
+  const glow = lv >= 11 ? '<circle cx="60" cy="80" r="56" fill="#fff3a6" opacity=".6"/>' : "";
+  return `<svg viewBox="0 0 120 140" width="100%" height="100%" role="img" aria-label="트레이너 Lv.${lv}">${glow}${trainerBody()}</svg>`;
+}
+// 포켓몬 도감: 레벨마다 한 칸씩 등록, 아직 못 만난 포켓몬은 그림자로 보이고 몇 레벨에 오는지 알려 줌
+function dex(level) {
+  const lv = Math.max(1, Math.min(level, POKES.length));
+  return '<div class="dex">' + POKES.map((p, i) => i < lv
+    ? `<div class="dc got${i === lv - 1 ? " new" : ""}"><img src="${POKE_ART(p.id)}" alt="${p.ko}" loading="lazy"><b>No.${i + 1}</b><span>${p.ko}</span></div>`
+    : `<div class="dc"><img class="sil" src="${POKE_ART(p.id)}" alt="" loading="lazy"><b>No.${i + 1}</b><span>Lv.${i + 1}</span></div>`).join("") + "</div>";
 }
 
 /* ---------- 저장 & 동기화 ---------- */
@@ -566,13 +594,15 @@ async function chooseName(raw) {
 function renderMe() {
   const m = local.me, lv = levelOf(m.txp);
   $("myChars").innerHTML = `<div class="main">${trainer(lv)}</div>`;
+  $("myDex").outerHTML = dex(lv).replace('<div class="dex">', '<div class="dex" id="myDex">');
+  $("dexCount").textContent = lv + " / " + POKES.length;
   $("myName").textContent = m.name + " 트레이너";
   $("myLv").textContent = "Lv." + lv;
   $("myTitle").textContent = titleOf(lv);
   if (lv < NEED.length) {
     const lo = NEED[lv - 1], hi = NEED[lv];
     $("xpFill").style.width = ((m.txp - lo) / (hi - lo) * 100) + "%";
-    $("xpText").textContent = `${m.txp} XP · ${hi - m.txp} XP 더 모으면 ${POKES[lv].ko} 등장!`;
+    $("xpText").textContent = `${m.txp} XP · ${hi - m.txp} XP 더 모으면 도감에 ${POKES[lv].ko} 등록!`;
   } else {
     $("xpFill").style.width = "100%";
     $("xpText").textContent = `${m.txp} XP · 최고 레벨 달성!`;
@@ -586,27 +616,24 @@ function renderMe() {
   $("soundBtn").innerHTML = ic(local.sound ? "volume" : "mute") + "소리";
 }
 let shownFriends = [];
-// 순위표에서 누른 친구의 트레이너를 크게 보여 주는 팝업
+// 친구 이름을 누르면 그 친구의 포켓몬 도감을 보여 주는 팝업
 function openChar(f) {
   const lv = levelOf(f.txp || 0);
-  $("charName").textContent = f.name + " 트레이너";
-  $("charView").innerHTML = `<div class="one"><div class="pic">${trainer(lv)}</div><b>Lv.${lv}</b><small>${titleOf(lv)}</small><div class="xp">${f.txp || 0} XP</div>`
-    + `<div class="gear">${POKES.slice(0, lv).map(p => `<span>${esc(p.ko)}</span>`).join("")}</div></div>`;
+  $("charName").textContent = f.name + " 트레이너의 도감";
+  $("charView").innerHTML = `<div class="charhead"><div class="pic">${trainer(lv)}</div><div><b>Lv.${lv}</b><small>${titleOf(lv)}</small><div class="xp">${f.txp || 0} XP</div></div></div>` + dex(lv);
   $("charModal").classList.remove("hidden");
 }
+// 순위 대신 친구 이름(가나다 순)만 보여 주고, 누르면 그 친구 도감을 연다
 function renderFriends() {
   const box = $("friendList");
   if (friends === null) { box.innerHTML = '<div class="fempty">' + ic("cloudOff") + '친구 목록을 불러오지 못했어요</div>'; return; }
-  const mineName = f => f.name.toLowerCase() === local.name.toLowerCase();
-  const list = friends.map(f => ({ txp: 0, ...f })).map(f => mineName(f) ? { ...f, txp: Math.max(f.txp, local.me.txp) } : f);
-  if (!list.some(mineName)) list.push({ name: local.me.name, txp: local.me.txp });
-  list.sort((a, b) => b.txp - a.txp || a.name.localeCompare(b.name, "ko"));
+  const list = friends.map(f => ({ txp: 0, ...f })).filter(f => f.name.toLowerCase() !== local.name.toLowerCase());
+  list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
   shownFriends = list;
-  box.innerHTML = list.map((f, i) => {
-    const lv = levelOf(f.txp), mine = mineName(f);
-    return `<div class="frow${mine ? " mine" : ""}" data-i="${i}" role="button" tabindex="0"><div class="rank">${i < 3 ? medal(i) : i + 1}</div><div class="mini">${trainer(lv)}</div>`
-      + `<div class="who"><b>${esc(f.name)}${mine ? " (나)" : ""}</b><small>트레이너 Lv.${lv} · ${POKES[lv - 1].ko}</small></div><div class="xp"><b>${f.txp}</b>XP</div></div>`;
-  }).join("");
+  box.innerHTML = list.length ? list.map((f, i) => {
+    const lv = levelOf(f.txp);
+    return `<button class="fbtn frow" data-i="${i}"><span class="mini">${trainer(lv)}</span><div><b>${esc(f.name)}</b><small>도감 ${lv}/${POKES.length}</small></div></button>`;
+  }).join("") : '<div class="fempty" style="grid-column:1/-1">아직 다른 친구가 없어요</div>';
 }
 async function loadFriends() {
   try { friends = (await api("/players")).players; online = true; }
@@ -758,9 +785,9 @@ function finish() {
   $("newRec").classList.toggle("hidden", !newRec);
   $("levelUp").classList.toggle("hidden", afterLv <= beforeLv);
   if (afterLv > beforeLv) {
-    $("luAvatar").innerHTML = trainer(afterLv);
+    $("luAvatar").innerHTML = `<img src="${POKE_ART(POKES[afterLv - 1].id)}" alt="${POKES[afterLv - 1].ko}">`;
     $("luTitle").innerHTML = ic("arrowUp") + " 레벨 업! Lv." + afterLv;
-    $("luItem").textContent = "새 포켓몬 친구: " + POKES.slice(beforeLv, afterLv).map(p => p.ko).join(", ");
+    $("luItem").textContent = "도감에 새로 등록: " + POKES.slice(beforeLv, afterLv).map(p => p.ko).join(", ");
   }
   $("rScoreLabel").textContent = "얻은 XP";
   $("rScore").textContent = "+" + score;
