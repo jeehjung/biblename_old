@@ -719,6 +719,7 @@ async function loadFriends() {
 }
 async function renderHome() {
   show("home"); renderMe();
+  if (typeof applyUpdate === "function") applyUpdate();
   $("friendList").innerHTML = '<div class="fempty">' + ic("loader", "spin") + '친구들을 불러오는 중...</div>';
   // 다른 폰에서 쌓은 기록도 반영되도록, 보낼 게 없으면 내 기록을 서버에서 다시 받아온다
   if (await flush() && !local.pending.length && local.name) {
@@ -974,6 +975,38 @@ $("leaveBtn").onclick = () => { $("quitModal").classList.add("hidden"); checkpoi
 // 문제를 풀다가 앱을 닫거나 다른 앱으로 넘어가도 푼 만큼 저장
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && !$("game").classList.contains("hidden")) checkpoint(false); });
 window.addEventListener("online", () => flush().then(() => { if (!$("home").classList.contains("hidden")) renderHome(); }));
+
+/* ---------- 새 버전 자동 적용 ---------- */
+// 서버의 최신 화면을 가끔 받아 와서, 지금 열린 화면과 코드(style·script)가 다르면 새로고침
+// 문제 푸는 중이거나 결과·팝업을 보고 있을 땐 기다렸다가 첫 화면으로 돌아왔을 때 새로고침
+const codeSig = d => {
+  const t = [...d.querySelectorAll("style,script")].map(e => e.textContent).join("\u0001");
+  let h = 5381; for (let i = 0; i < t.length; i++) h = (Math.imul(h, 33) ^ t.charCodeAt(i)) >>> 0;
+  return h.toString(36) + t.length.toString(36);
+};
+const MY_SIG = codeSig(document);
+let updateTo = null;
+const safeToReload = () => ["game", "end"].every(id => $(id).classList.contains("hidden"))
+  && $("fx").classList.contains("hidden") && !document.querySelector(".modal:not(.hidden)");
+function applyUpdate() {
+  if (!updateTo || !safeToReload()) return;
+  persist();
+  location.replace(location.pathname + "?v=" + updateTo); // 주소를 바꿔서 캐시된 예전 화면 대신 새 화면을 받음
+}
+async function checkUpdate() {
+  if (location.protocol === "file:" || updateTo) return;
+  try {
+    const r = await fetch(location.pathname + "?u=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) return;
+    const sig = codeSig(new DOMParser().parseFromString(await r.text(), "text/html"));
+    if (sig === MY_SIG) { sessionStorage.removeItem("updTo"); return; }
+    if (sessionStorage.getItem("updTo") === sig) return; // 이미 한 번 새로고침했는데 그대로면 되풀이하지 않음
+    sessionStorage.setItem("updTo", sig); updateTo = sig; applyUpdate();
+  } catch (e) {}
+}
+setTimeout(checkUpdate, 3000);
+setInterval(checkUpdate, 5 * 60 * 1000);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkUpdate(); });
 
 if (local.name && local.me) renderHome(); else openName(false);
 </script>
